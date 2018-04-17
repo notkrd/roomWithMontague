@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject._
 import play.api.mvc._
+import models.Monologue
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -17,7 +18,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.index("Room With Montague", Monologue.intro.text, Monologue.tutorial))
   }
 
 }
