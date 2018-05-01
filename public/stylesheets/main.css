@@ -7,7 +7,11 @@ caption,th,td{text-align:left;font-weight:normal;}
 form legend{display:none;}
 blockquote:before,blockquote:after,q:before,q:after{content:"";}
 blockquote,q{quotes:"" "";}
-ol,ul{list-style:none;}
+
+ol,ul{
+    list-style: circle inside none;
+}
+
 hr{display:none;visibility:hidden;}
 :focus{outline:0;}
 article{}article h1,article h2,article h3,article h4,article h5,article h6{color:#333;font-weight:bold;line-height:1.25;margin-top:1.3em;}
@@ -125,3 +129,17 @@ form dl{padding:10px 0;}
 dd.info{color:#888;font-size:12px;}
 dd.error{color:#c00;}
 aside a[href^="http"]:after,.doc a[href^="http"]:after{content:url(/assets/images/external.png);vertical-align:middle;margin-left:5px;}
+
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    overflow-y: auto;
+}
+.flex-container > div {
+    margin: 30px;
+}
+#content {
+    height: 80%;
+    overflow-y:auto;
+}

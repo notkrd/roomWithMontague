@@ -1,12 +1,24 @@
-@(title: String, message: String, m: Monologue, style: String = "scala")
+@(title: String, message: String, w: World, style: String = "scala")
 
-<section id="top">
-    <div class="wrapper">
-        <h1>@title</h1>
-    </div>
-</section>
+@main("Room With Montague") {
 
-<div id="content" class="wrapper doc">
-    @monologue(m) <br>
-    @Html(message)
-</div>
+    <section id="top">
+        <div class="title">
+            <h1>@title</h1>
+        </div>
+    </section>
+
+    <section id="main">
+        <div class="flex-container" id="world_state">
+            <div id="world_vals">
+                @worldview(w)
+            </div>
+
+            <div id="content" class="wrapper doc">
+                @instructions(Monologue.monologues("tutorial"))
+                <div id="assertion"><p>@message</p></div>
+                @monologue(Monologue.monologues("intro"))
+            </div>
+    </section>
+
+}

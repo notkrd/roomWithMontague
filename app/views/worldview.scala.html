@@ -1,0 +1,12 @@
+@(w: World)
+
+@for(some_cat <- w.lexicon.keys.toSeq.sorted){
+    <h2>@some_cat</h2>
+    <ul>
+    @for(a_thing <- w.lexicon(some_cat).toSeq.sorted) {
+        <li>@a_thing</li>
+    }
+    </ul>
+}
+<br>
+<br>

@@ -1,0 +1,68 @@
+
+ol,ul{
+    list-style: circle inside none;
+}
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    overflow-y: auto;
+}
+.flex-container > div {
+    /*margin: 10px 30px 10px 30 px;*/
+}
+
+
+#top{background:#80c846 url(/assets/images/plaster_wall_texture.jpg) fixed;box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;}
+#top .title{padding:30px 0;}
+#top h1{float:left;color: dimgray;font-size:35px;line-height:48px;text-shadow:2px 2px 0 rgba(0, 0, 0, 0.1);}
+
+#top h1 a{text-decoration:none;color:#fff;}
+
+.title{width:40vw;margin:0 auto;box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;padding:60px 0;}
+.title:after{content:" ";display:block;clear:both;}
+
+
+body{
+    color:#555;
+    font:15px "Helvetica Nueue",sans-serif;
+    padding:0px 0 0px;
+    background-color: gainsboro;
+}
+
+
+a{color:#80c846;}a:hover{color:#6dae38;}
+p{margin:1em 0;}
+
+.texty {
+    max-width: 720px;
+}
+
+.instructional {
+    max-width: 720px;
+    font-size: large;
+    color: black;
+}
+
+#content {
+    height: 70vh;
+    overflow-y: auto;
+    margin: 40px 20px;
+    border: 20px solid white;
+    background-color: white;
+}
+
+#world_vals {
+    width: 30vw;
+    max-width: 320px;
+    height: 70vh;
+    overflow-y: auto;
+    margin: 40px 20px;
+    border: 20px solid white;
+    background-color: white;
+}
+
+#assertion {
+    font-size: xx-large;
+    color: black;
+}
