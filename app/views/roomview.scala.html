@@ -1,4 +1,4 @@
-@(title: String, message: String, w: World, style: String = "scala")
+@(title: String, message: String, base_monologue: Monologue, w: World, style: String = "scala")
 
 @main("Room With Montague") {
 
@@ -9,16 +9,25 @@
     </section>
 
     <section id="main">
+
         <div class="flex-container" id="world_state">
             <div id="world_vals">
+
+                <div id="nav-links">
+                    <a href="@routes.HomeController.showThisRoom">This room</a>
+                    <a href="@routes.HomeController.showThatRoom">That room</a>
+                </div>
+
                 @worldview(w)
             </div>
 
             <div id="content" class="wrapper doc">
+                <div id="assertion"><p id="message">@message</p> <button>Assert</button><br></div>
                 @instructions(Monologue.monologues("tutorial"))
-                <div id="assertion"><p>@message</p></div>
-                @monologue(Monologue.monologues("intro"))
+                @monologue(base_monologue)
             </div>
     </section>
 
+
+    <script src="@routes.Assets.versioned("javascripts/viewingrooms.js")" type="text/javascript"></script>
 }

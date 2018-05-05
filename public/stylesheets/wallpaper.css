@@ -31,7 +31,6 @@ body{
 }
 
 
-a{color:#80c846;}a:hover{color:#6dae38;}
 p{margin:1em 0;}
 
 .texty {
@@ -44,8 +43,20 @@ p{margin:1em 0;}
     color: black;
 }
 
+#nav-links a:link{
+    margin-right: 1em;
+    font-size: large;
+    color: blueviolet;
+}
+#nav-links a:visited{
+    color: indianred;
+}
+#nav-links a:hover{
+    color: darkred;
+}
+
 #content {
-    height: 70vh;
+    height: 65vh;
     overflow-y: auto;
     margin: 40px 20px;
     border: 20px solid white;
@@ -55,7 +66,7 @@ p{margin:1em 0;}
 #world_vals {
     width: 30vw;
     max-width: 320px;
-    height: 70vh;
+    height: 65vh;
     overflow-y: auto;
     margin: 40px 20px;
     border: 20px solid white;
@@ -65,4 +76,8 @@ p{margin:1em 0;}
 #assertion {
     font-size: xx-large;
     color: black;
+}
+
+#message {
+    display: inline;
 }

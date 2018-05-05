@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 import play.api.mvc._
-import models.{Monologue, thisRoom, World}
+import models.{Monologue, thisRoom, thatRoom, World}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -17,8 +17,13 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
-  def index = Action {
-    Ok(views.html.roomview("Room With Montague", "The water is wet.", thisRoom.d_model, style="scala"))
+  def showThisRoom = Action {
+    Ok(views.html.roomview("Room With Montague", "The water is wet.", Monologue.monologues("intro"), thisRoom.d_model, style="scala"))
+  }
+
+
+  def showThatRoom = Action {
+    Ok(views.html.roomview("Room With Montague", "The water is wet.", Monologue.monologues("montague"), thatRoom.d_model, style="scala"))
   }
 
 }
