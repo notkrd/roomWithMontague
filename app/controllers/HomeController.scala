@@ -26,4 +26,13 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.roomview("Room With Montague", "The water is wet.", Monologue.monologues("montague"), thatRoom.d_model, style="scala"))
   }
 
+  def getMonologue = Action { request  =>
+    val request_params = request.queryString.map { case (k,v) => k -> v.mkString }
+    if(request_params.keySet contains "id") {
+      Ok(Monologue.monologues(request_params("id")).text)
+    }
+    else{
+      BadRequest
+    }
+  }
 }

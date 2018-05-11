@@ -29,5 +29,5 @@ object thatRoom{
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val d_model: World = new World(d_entities, d_rel1, d_rel2, a_lex)
+  val d_model: World = new World(d_entities, d_rel1, d_rel2, a_lex, "That room")
 }

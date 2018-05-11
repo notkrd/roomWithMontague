@@ -10,7 +10,11 @@ package models
  * allow accessing parts of the model through strings: the Model can contain the data of the strctured representations of
  * predicates, while the semantics only knows how to "send a word into the portal"
  */
-class World(val entities: Map[KeyPhrase, Entity], val relations1: Map[KeyPhrase, PredSing], val relations2: Map[KeyPhrase, Entity => Entity => Boolean], val lexicon: Map[KeyPhrase, Set[KeyPhrase]] = Map()) {
+class World(val entities: Map[KeyPhrase, Entity],
+            val relations1: Map[KeyPhrase, PredSing],
+            val relations2: Map[KeyPhrase, Entity => Entity => Boolean],
+            val lexicon: Map[KeyPhrase, Set[KeyPhrase]] = Map(),
+            val name: String = "unknown world") {
   /** The entities in the model */
   lazy val entities_set: Set[Entity] = this.entities.values.toSet
   /** The one-place relations in the model */

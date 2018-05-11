@@ -11,7 +11,7 @@
     <section id="main">
 
         <div class="flex-container" id="world_state">
-            <div id="world_vals">
+            <div id="world-vals" data-world="@w.name">
 
                 <div id="nav-links">
                     <a href="@routes.HomeController.showThisRoom">This room</a>
@@ -21,10 +21,12 @@
                 @worldview(w)
             </div>
 
-            <div id="content" class="wrapper doc">
+            <div id="discourse" class="wrapper doc">
                 <div id="assertion"><p id="message">@message</p> <button>Assert</button><br></div>
+                <p id="text-log" class="texty" data-eh="eh">
+<!--                @monologue(base_monologue) -->
+                </p>
                 @instructions(Monologue.monologues("tutorial"))
-                @monologue(base_monologue)
             </div>
     </section>
 

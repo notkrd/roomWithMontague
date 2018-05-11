@@ -26,9 +26,9 @@ object thisRoom{
   var l_adjs = Set("wet", "dead", "alive", "empty", "blue", "dirty")
   var l_ns = Set("dish", "animal", "cup")
   var l_spec = Set("is","not","and","or")
-  var a_lex = Map("Entities" -> d_entities.keySet, "Intransitive Verbs" -> l_verbs, "Transitive Verbs" -> d_rel2.keySet, "Special" -> l_spec, "Adjectives" -> l_adjs, "Nouns" -> l_ns)
+  var a_lex = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Special" -> l_spec, "Adjective" -> l_adjs, "Noun" -> l_ns)
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val d_model: World = new World(d_entities, d_rel1, d_rel2, a_lex)
+  val d_model: World = new World(d_entities, d_rel1, d_rel2, a_lex, "This room")
 }

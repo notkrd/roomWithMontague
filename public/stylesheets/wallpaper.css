@@ -35,10 +35,13 @@ p{margin:1em 0;}
 
 .texty {
     max-width: 720px;
+    margin: 2em;
+    font-size: large;
 }
 
 .instructional {
     max-width: 720px;
+    margin: 2em;
     font-size: large;
     color: black;
 }
@@ -55,19 +58,23 @@ p{margin:1em 0;}
     color: darkred;
 }
 
-#content {
+#discourse {
+    max-width: 60vw;
     height: 65vh;
-    overflow-y: auto;
+    overflow-y: scroll;
+    overflow-scrolling: touch;
     margin: 40px 20px;
     border: 20px solid white;
     background-color: white;
+
 }
 
-#world_vals {
+#world-vals {
     width: 30vw;
     max-width: 320px;
     height: 65vh;
-    overflow-y: auto;
+    overflow-y: scroll;
+    overflow-scrolling: touch;
     margin: 40px 20px;
     border: 20px solid white;
     background-color: white;
@@ -80,4 +87,9 @@ p{margin:1em 0;}
 
 #message {
     display: inline;
+}
+
+.world-elt {
+    text-decoration: underline blue;
+    margin-bottom: 0.25em;
 }
