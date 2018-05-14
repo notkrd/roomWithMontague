@@ -1,30 +1,44 @@
 function addMonologue(monologue_id) {
-    $.get("/monologue", {id: monologue_id}, (function(r) { setLog(r); }));
+    $.get("/monologue", {id: monologue_id}, (function(r) { addToLog(r); }));
 }
 
-function setLog(str) {
-    $("#text-log").html(str);
+function makeAssertion(an_utterance) {
+    $.get("/assert", {utterance: an_utterance}, (function(r) { addToLog(r); }));
+    clearMsg();
 }
 
-function getReq(monologue_id) {
-    return $.get("/monologue", {id: monologue_id})
+function addToLog(stuff) {
+    $("#text-log").prepend(stuff);
+}
+
+function replaceMsg(some_str) {
+    $("#message").text(some_str);
+}
+
+function addMsg(some_str) {
+    $("#message").append(" " + some_str);
+}
+
+function clearMsg() {
+    $("#message").text("");
+}
+
+function restartDiscourse() {
+    $("#text-log").text("");
 }
 
 $(function() {
 
     console.log("eh");
 
-    function replaceMsg(some_str) {
-        $("#message").text(some_str);
-    }
-
     function tryToUtterPhrase(some_str) {
-        replaceMsg(some_str);
+        addMsg(some_str);
     }
 
     $(".world-elt").click(function () {tryToUtterPhrase($(this).attr("data-elt-val"))});
-
-    addMonologue("intro")
+    $("#assert-button").click(function () {makeAssertion($("#message").text())});
+    $("#clear-button").click(function () {clearMsg()});
+    $("#restart-button").click(function () {restartDiscourse()});
 
 });
 

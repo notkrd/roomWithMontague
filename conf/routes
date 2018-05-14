@@ -19,3 +19,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # Accessing monologues
 GET     /monologue                  controllers.HomeController.getMonologue
+
+# Making assertions
+GET    /assert                     controllers.HomeController.assert

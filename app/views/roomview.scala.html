@@ -1,4 +1,4 @@
-@(title: String, message: String, base_monologue: Monologue, w: World, style: String = "scala")
+@(title: String, message: String, w: World, style: String = "scala")
 
 @main("Room With Montague") {
 
@@ -22,9 +22,11 @@
             </div>
 
             <div id="discourse" class="wrapper doc">
-                <div id="assertion"><p id="message">@message</p> <button>Assert</button><br></div>
+                <div id="assertion"><p id="message">@message</p>
+                    <button id="assert-button">Assert</button>
+                    <button id="clear-button">Never mind</button>
+                    <button id="restart-button">New discourse</button><br></div>
                 <p id="text-log" class="texty" data-eh="eh">
-<!--                @monologue(base_monologue) -->
                 </p>
                 @instructions(Monologue.monologues("tutorial"))
             </div>

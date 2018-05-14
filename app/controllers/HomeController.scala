@@ -18,12 +18,12 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def showThisRoom = Action {
-    Ok(views.html.roomview("Room With Montague", "The water is wet.", Monologue.monologues("intro"), thisRoom.d_model, style="scala"))
+    Ok(views.html.roomview("Room With Montague", "the water is wet", thisRoom.d_model, style="scala"))
   }
 
 
   def showThatRoom = Action {
-    Ok(views.html.roomview("Room With Montague", "The water is wet.", Monologue.monologues("montague"), thatRoom.d_model, style="scala"))
+    Ok(views.html.roomview("Room With Montague", "the mathematician is dead", thatRoom.d_model, style="scala"))
   }
 
   def getMonologue = Action { request  =>
@@ -34,5 +34,30 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     else{
       BadRequest
     }
+  }
+
+  def formatStr(str: String): String = {
+    str.trim.capitalize ++ ".<br><br>"
+  }
+
+  def assert = Action { request =>
+    val request_params = request.queryString.map { case (k,v) => k -> v.mkString }
+    if(request_params.keySet contains "utterance") {
+      var response = formatStr(request_params("utterance"))
+      if(request_params("utterance").toLowerCase.trim == "the water is wet") {
+        response += Monologue.monologues("intro").text
+      }
+      else if(request_params("utterance").toLowerCase == "the mathematician is dead") {
+        response += Monologue.monologues("montague").text
+      }
+      else {
+        response += formatStr("unknown")
+      }
+      Ok(response)
+    }
+    else{
+      BadRequest
+    }
+
   }
 }
