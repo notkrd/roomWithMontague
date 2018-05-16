@@ -3,6 +3,7 @@ package controllers
 import javax.inject._
 import play.api.mvc._
 import models.{Monologue, thisRoom, thatRoom, World}
+import scala.collection.immutable.{Map, Set, Seq}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -26,8 +27,12 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.roomview("Room With Montague", "the mathematician is dead", thatRoom.d_model, style="scala"))
   }
 
+  def formatStr(str: String): String = {
+    str.trim.capitalize ++ ". "
+  }
+
   def getMonologue = Action { request  =>
-    val request_params = request.queryString.map { case (k,v) => k -> v.mkString }
+    val request_params: Map[String, String] = request.queryString.map { case (k,v) => k -> v.mkString }
     if(request_params.keySet contains "id") {
       Ok(Monologue.monologues(request_params("id")).text)
     }
@@ -36,28 +41,20 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     }
   }
 
-  def formatStr(str: String): String = {
-    str.trim.capitalize ++ ".<br><br>"
-  }
-
   def assert = Action { request =>
-    val request_params = request.queryString.map { case (k,v) => k -> v.mkString }
+    val request_params: Map[String, String] = request.queryString.map { case (k,v) => k -> v.mkString }
     if(request_params.keySet contains "utterance") {
-      var response = formatStr(request_params("utterance"))
-      if(request_params("utterance").toLowerCase.trim == "the water is wet") {
-        response += Monologue.monologues("intro").text
-      }
-      else if(request_params("utterance").toLowerCase == "the mathematician is dead") {
-        response += Monologue.monologues("montague").text
+      val utterance_in: String = request_params("utterance").toLowerCase.trim
+      val response: String = if(Monologue.triggers.keySet contains utterance_in) {
+        "<strong>" ++ formatStr(utterance_in) ++ "</strong>" ++ Monologue.triggers(utterance_in).text
       }
       else {
-        response += formatStr("unknown")
+        formatStr("this language does not determine whether or not it is the case that " ++ "<strong>" ++ utterance_in ++ "</strong>. You must be speaking some other language, if you are speaking any language at all")
       }
-      Ok(response)
+      Ok(response ++ "<br><br>")
     }
     else{
       BadRequest
     }
-
   }
 }
