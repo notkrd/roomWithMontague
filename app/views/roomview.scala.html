@@ -1,4 +1,4 @@
-@(title: String, message: String, w: World, style: String = "scala")
+@(title: String, w: World, style: String = "scala")
 
 @main("Room With Montague") {
 
@@ -22,7 +22,7 @@
             </div>
 
             <div id="discourse" class="wrapper doc">
-                <div id="assertion"><p id="message">@message</p>
+                <div id="assertion"><p id="message"></p>
                     <button id="assert-button">Assert</button>
                     <button id="clear-button">Never mind</button>
                     <button id="restart-button">New discourse</button><br></div>

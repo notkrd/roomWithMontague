@@ -2,8 +2,12 @@ package controllers
 
 import javax.inject._
 import play.api.mvc._
-import models.{Monologue, thisRoom, thatRoom, World}
+import play.api.libs.json.{Json, JsValue}
+
+
 import scala.collection.immutable.{Map, Set, Seq}
+
+import models.{Monologue, thisRoom, thatRoom, World}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -19,12 +23,13 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * a path of `/`.
    */
   def showThisRoom = Action {
-    Ok(views.html.roomview("Room With Montague", "the water is wet", thisRoom.d_model, style="scala"))
+    Ok(views.html.roomview("Room With Montague", thisRoom.d_model, style="scala"))
   }
 
 
   def showThatRoom = Action {
-    Ok(views.html.roomview("Room With Montague", "the mathematician is dead", thatRoom.d_model, style="scala"))
+    val mathematician_parsed: Seq[Map[String, String]] = Seq(Map("phrase" -> "the mathematician", "cat" -> "NP"), Map("phrase" -> "is dead", "cat" -> "VP"))
+    Ok(views.html.roomview("Room With Montague", thatRoom.d_model, style="scala"))
   }
 
   def formatStr(str: String): String = {
@@ -49,7 +54,7 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
         "<strong>" ++ formatStr(utterance_in) ++ "</strong>" ++ Monologue.triggers(utterance_in).text
       }
       else {
-        formatStr("this language does not determine whether or not it is the case that " ++ "<strong>" ++ utterance_in ++ "</strong>. You must be speaking some other language, if you are speaking any language at all")
+        formatStr("this language does not determine whether or not it is the case that " ++ "<strong>" ++ utterance_in ++ "</strong>. You must be speaking some other language, if you are speaking language at all")
       }
       Ok(response ++ "<br><br>")
     }
