@@ -3,7 +3,7 @@ package models
 import scala.collection.immutable.{Seq, Set}
 
 object thatRoom{
-  val d_entities: Map[KeyPhrase, Entity] = Map("the semanticist" -> "MONTAGUE", "the towel" -> "TOWEL", "the ant" -> "ANT", "the water" -> "WATER")
+  val d_entities: Map[KeyPhrase, Entity] = Map("the semanticist" -> "MONTAGUE", "the bath towel" -> "TOWEL", "the ant" -> "ANT", "the water" -> "WATER", "the soap dish" -> "SOAP_DISH", "the wallet" -> "WALLET")
 
   val isAlive: PredSing = Set()
   val isWet: PredSing = Set("MONTAGUE")
