@@ -12,7 +12,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
     )
 
 libraryDependencies ++= Seq( jdbc , ehcache , ws , specs2 % Test , guice )
-libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.23s"
+libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.2.23"
       
 
 

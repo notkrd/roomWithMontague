@@ -27,13 +27,16 @@ object thisRoom{
   var l_det = Set("a", "an", "the")
   var l_verbs = Set("lives")
   var l_adjs = Set("wet", "dead", "alive", "empty", "blue", "dirty", "red", "thick")
-  var l_ns = Set("dish", "animal", "cup")
-  var l_spec = Set("is", "are", "not","and","or")
-  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Special" -> l_spec, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_det)
+  var l_ns = Set("dish", "animal", "cup", "mathematician")
+  var l_aux = Set("is", "are")
+  var l_conj = Set("and","or")
+  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux, "Conjunction" -> l_conj, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_det)
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor)
+  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.kavi)
 
-  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex, "This room", triggers)
+  val cat_succs: Map[String, Set[String]] = Map("Entity" -> Set("Transitive Verb", "Intransitive Verb", "Auxiliary Verb"))
+
+  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers, cat_succs)
 }

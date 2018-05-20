@@ -17,8 +17,8 @@ GET     /message                    controllers.AsyncController.message
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file)
 
-# Accessing monologues
-GET     /ajax/monologue             controllers.HomeController.getMonologue
-
 # Making assertions
-GET    /ajax/assert                 controllers.HomeController.assert
+POST     /ajax/assert/:wname        controllers.HomeController.assert(wname: String)
+
+# Js routing please god
+GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes

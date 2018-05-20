@@ -11,7 +11,13 @@ function addMonologue(monologue_id) {
 }
 
 function makeAssertion(an_utterance, utterance_parsed, a_world) {
-    $.get("/ajax/assert", {utterance: an_utterance, parsed: utterance_parsed, world: a_world}, (function(r) { addToLog(r); }));
+    $.ajax({url: jsRoutes.controllers.HomeController.assert(theWorld()).url,
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({"utterance": an_utterance, "parsed": utterance_parsed, "world": a_world}),
+        headers: {"Content-Type": "application/json"},
+        success: (function(r) { addToLog(r); })
+    });
     clearMsg();
 }
 

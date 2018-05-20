@@ -31,5 +31,5 @@ object thatRoom{
 
   val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem)
 
-  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex, "That room")
+  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"That room", triggers)
 }

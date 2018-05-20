@@ -30,4 +30,8 @@ package object models {
   def tuplesToPredBin(tups: Set[(Entity,Entity)]): PredBin = (x: Entity) => (y: Entity) => {
     tups.contains((x, y))
   }
+
+  def formatStr(str: String): String = {
+    str.trim.capitalize ++ ". "
+  }
 }
