@@ -90,6 +90,6 @@ p{margin:1em 0;}
 }
 
 .world-elt {
-    text-decoration: underline blue;
+    /*text-decoration: underline blue;*/
     margin-bottom: 0.25em;
 }

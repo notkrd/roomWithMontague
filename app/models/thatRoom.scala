@@ -25,9 +25,11 @@ object thatRoom{
   var l_ns = Set("towel", "mathematician", "philosopher", "successful real estate investor")
   var l_aux_verbs = Set("is")
   var l_dets = Set("a(n)", "the")
-  var a_lex = Map("Entities" -> d_entities.keySet, "Intransitive Verbs" -> l_verbs, "Transitive Verbs" -> d_rel2.keySet, "Auxiliary Verbs" -> l_aux_verbs, "Adjectives" -> l_adjs, "Nouns" -> l_ns, "Determiners" -> l_dets)
+  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entities" -> d_entities.keySet, "Intransitive Verbs" -> l_verbs, "Transitive Verbs" -> d_rel2.keySet, "Auxiliary Verbs" -> l_aux_verbs, "Adjectives" -> l_adjs, "Nouns" -> l_ns, "Determiners" -> l_dets)
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val d_model: World = new World(d_entities, d_rel1, d_rel2, a_lex, "That room")
+  val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem)
+
+  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex, "That room")
 }

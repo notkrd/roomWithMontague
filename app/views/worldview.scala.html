@@ -1,12 +1,21 @@
-@(w: World)
+@(w: DiscoWorld)
 
-@for(some_cat <- w.lexicon.keys.toSeq.sorted){
-    <h2>@some_cat</h2>
-    <ul>
-    @for(a_thing <- w.lexicon(some_cat).toSeq.sorted) {
-        <li class="world-elt" data-elt-val="@a_thing" data-cat="@some_cat">@a_thing</li>
+
+<div id="world-vals" class="wrapper doc" data-world="@w.name">
+
+    <div id="nav-links">
+        <a href="@routes.HomeController.showThisRoom">This room</a>
+        <a href="@routes.HomeController.showThatRoom">That room</a>
+    </div>
+
+    @for(some_cat <- w.lexicon.keys.toSeq.sorted){
+        <h2>@some_cat</h2>
+        <ul>
+        @for(a_thing <- w.lexicon(some_cat).toSeq.sorted) {
+            <li class="world-elt" data-elt-val="@a_thing" data-cat="@some_cat"><a href="#nowhere">@a_thing</a></li>
+        }
+        </ul>
     }
-    </ul>
-}
-<br>
-<br>
+    <br>
+    <br>
+</div>

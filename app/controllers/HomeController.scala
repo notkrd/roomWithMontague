@@ -7,7 +7,7 @@ import play.api.libs.json.{Json, JsValue}
 
 import scala.collection.immutable.{Map, Set, Seq}
 
-import models.{Monologue, thisRoom, thatRoom, World}
+import models.{Monologue, thisRoom, thatRoom, DiscoWorld}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -22,14 +22,15 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
+  def rooms_known: Map[String, DiscoWorld] = Set(thisRoom.d_model, thatRoom.d_model).foldLeft(Map.empty[String, DiscoWorld])((m, w) => m + (w.name -> w))
+
   def showThisRoom = Action {
-    Ok(views.html.roomview("Room With Montague", thisRoom.d_model, style="scala"))
+    Ok(views.html.roomview("Room With Montague", rooms_known("This room"), style="scala"))
   }
 
 
   def showThatRoom = Action {
-    val mathematician_parsed: Seq[Map[String, String]] = Seq(Map("phrase" -> "the mathematician", "cat" -> "NP"), Map("phrase" -> "is dead", "cat" -> "VP"))
-    Ok(views.html.roomview("Room With Montague", thatRoom.d_model, style="scala"))
+    Ok(views.html.roomview("Room With Montague", rooms_known("That room"), style="scala"))
   }
 
   def formatStr(str: String): String = {
