@@ -19,7 +19,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     val its_false_msg: String = "It is not the case that <strong>" + full_phrase + "</strong>. "
 
     parsed match {
-      case Nil => "There is nothing here."
+      case Nil => "There is nothing here. "
       case head :: Nil => head("cat") match {
           case "Sentence" => "It seems we're done here, too late for meaning"
           case _ => failure_msg
@@ -48,8 +48,8 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
               else { its_false_msg }
             }
             else { key_error_msg }
-          }
           case _ => failure_msg
+          }
       case _ => failure_msg
     }
   }

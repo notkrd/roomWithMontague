@@ -71,7 +71,7 @@ function initializeDiscourse(the_world) {
 
     else if (the_world == "That room") {
         theMessage().text("the mathematician is dead");
-        theMessage().data("parsed", [{"phrase": "the mathematician", "cat": "NP"}, {"phrase": "is", "cat": "Auxiliary Verb"}, {"phrase": "dead", "cat": "Adjective"}]);
+        theMessage().data("parsed", [{"phrase": "the mathematician", "cat": "Entity"}, {"phrase": "is", "cat": "Auxiliary Verb"}, {"phrase": "dead", "cat": "Adjective"}]);
         theMessage().data("cat", "Sentence");
     }
     else {
