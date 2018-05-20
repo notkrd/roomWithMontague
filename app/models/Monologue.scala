@@ -28,5 +28,5 @@ object Monologue {
 
   val blankets = new Monologue("On blankets", "This room establishes leaf-shadowed temporalities. The intention to act is insufficient to act, even when accompanied by the ability to act. Some might respond by redefining intention to only occur when some physiological sign of action occurs. ")
 
-  val kavi = new Monologue("Thank you very much", "I'm alive, thank you very much, and I quit math 17 months ago.")
+  val thx = new Monologue("Thank you very much", "I'm alive, thank you very much, and I quit math 17 months ago.")
 }

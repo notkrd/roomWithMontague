@@ -18,7 +18,7 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file)
 
 # Making assertions
-POST     /ajax/assert/:wname        controllers.HomeController.assert(wname: String)
+POST     /ajax/assert/:wname        controllers.Assertions.assert(wname: String)
 
 # Js routing please god
 GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes

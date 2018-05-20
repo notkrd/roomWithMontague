@@ -34,9 +34,7 @@ object thisRoom{
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.kavi)
+  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx)
 
-  val cat_succs: Map[String, Set[String]] = Map("Entity" -> Set("Transitive Verb", "Intransitive Verb", "Auxiliary Verb"))
-
-  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers, cat_succs)
+  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers)
 }

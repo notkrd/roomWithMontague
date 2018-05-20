@@ -27,11 +27,13 @@ package object models {
     * @param tups The ordered pairs satisfying the predicate
     * @return The characteristic binary relation for the set of pairs
     */
-  def tuplesToPredBin(tups: Set[(Entity,Entity)]): PredBin = (x: Entity) => (y: Entity) => {
+  def tuplesToPredBin(tups: Set[(Entity, Entity)]): PredBin = (x: Entity) => (y: Entity) => {
     tups.contains((x, y))
   }
 
   def formatStr(str: String): String = {
     str.trim.capitalize ++ ". "
   }
+
+  val shit_syntax: Map[(String, String), String] = Map(("Vacant", "Entity") -> "Entity", ("Vacant", "Determiner") -> "Determiner", ("Determiner", "Noun") -> "Noun", ("Entity", "Intransitive Verb") -> "Sentence", ("Noun", "Auxiliary Verb") -> "Noun + Auxiliary Verb", ("Noun + Auxiliary Verb", "Adjective") -> "Sentence")
 }

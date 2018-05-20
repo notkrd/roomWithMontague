@@ -3,9 +3,9 @@ package models
 import scala.collection.immutable.{Seq, Set}
 
 object thatRoom{
-  val d_entities: Map[KeyPhrase, Entity] = Map("the semanticist" -> "MONTAGUE", "the bath towel" -> "TOWEL", "the ant" -> "ANT", "the water" -> "WATER", "the soap dish" -> "SOAP_DISH", "the wallet" -> "WALLET")
+  val d_entities: Map[KeyPhrase, Entity] = Map("the semanticist" -> "MONTAGUE", "the mathematician" -> "MONTAGUE", "the bath towel" -> "TOWEL", "the ant" -> "ANT", "the water" -> "WATER", "the soap dish" -> "SOAP_DISH", "the wallet" -> "WALLET")
 
-  val isAlive: PredSing = Set()
+  val isAlive: PredSing = Set("ANT")
   val isWet: PredSing = Set("MONTAGUE")
   val isTowel: PredSing = Set("TOWEL")
   val isMathemetician: PredSing = Set("Montague")
@@ -25,7 +25,7 @@ object thatRoom{
   var l_ns = Set("towel", "mathematician", "philosopher", "successful real estate investor")
   var l_aux_verbs = Set("is")
   var l_dets = Set("a(n)", "the")
-  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entities" -> d_entities.keySet, "Intransitive Verbs" -> l_verbs, "Transitive Verbs" -> d_rel2.keySet, "Auxiliary Verbs" -> l_aux_verbs, "Adjectives" -> l_adjs, "Nouns" -> l_ns, "Determiners" -> l_dets)
+  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux_verbs, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_dets)
 
   val discRepresentation = new Box(Seq(), Seq())
 

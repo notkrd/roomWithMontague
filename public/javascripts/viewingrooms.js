@@ -11,7 +11,7 @@ function addMonologue(monologue_id) {
 }
 
 function makeAssertion(an_utterance, utterance_parsed, a_world) {
-    $.ajax({url: jsRoutes.controllers.HomeController.assert(theWorld()).url,
+    $.ajax({url: jsRoutes.controllers.Assertions.assert(theWorld()).url,
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify({"utterance": an_utterance, "parsed": utterance_parsed, "world": a_world}),
@@ -65,13 +65,13 @@ function tryToUtterPhrase(some_str, some_cat) {
 function initializeDiscourse(the_world) {
     if (the_world == "This room") {
         theMessage().text("the water is wet");
-        theMessage().data("parsed", [{"phrase": "the water", "cat": "NP"}, {"phrase": "is wet", "cat": "VP"}]);
+        theMessage().data("parsed", [{"phrase": "the water", "cat": "Entity"}, {"phrase": "is", "cat": "Auxiliary Verb"}, {"phrase": "wet", "cat": "Adjective"}]);
         theMessage().data("cat", "Sentence");
     }
 
     else if (the_world == "That room") {
         theMessage().text("the mathematician is dead");
-        theMessage().data("parsed", [{"phrase": "the mathematician", "cat": "NP"}, {"phrase": "is dead", "cat": "VP"}]);
+        theMessage().data("parsed", [{"phrase": "the mathematician", "cat": "NP"}, {"phrase": "is", "cat": "Auxiliary Verb"}, {"phrase": "dead", "cat": "Adjective"}]);
         theMessage().data("cat", "Sentence");
     }
     else {
