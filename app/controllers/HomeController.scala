@@ -38,7 +38,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def javascriptRoutes = Action { implicit request =>
     Ok(
       JavaScriptReverseRouter("jsRoutes")(
-        routes.javascript.Assertions.assert
+        routes.javascript.Assertions.assert,
+        routes.javascript.Assertions.compose
       )
     ).as("text/javascript")
   }

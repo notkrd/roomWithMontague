@@ -20,5 +20,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 # Making assertions
 POST     /ajax/assert/:wname        controllers.Assertions.assert(wname: String)
 
+GET     /ajax/compose/:wname        controllers.Assertions.compose(wname: String)
+
 # Js routing please god
 GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes

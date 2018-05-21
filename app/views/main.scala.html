@@ -18,7 +18,8 @@
 
             <!-- Embedded Javascript router -->
     @helper.javascriptRouter("jsRoutes")(
-        routes.javascript.Assertions.assert
+        routes.javascript.Assertions.assert,
+        routes.javascript.Assertions.compose
     )
 
     <script type="text/javascript" src="@routes.HomeController.javascriptRoutes"></script>

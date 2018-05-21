@@ -3,6 +3,14 @@ ol,ul{
     list-style: circle inside none;
 }
 
+a.permitted {
+    color: black;
+}
+
+a.verboten {
+    color: red;
+}
+
 .flex-container {
     display: flex;
     flex-direction: row;
@@ -13,7 +21,10 @@ ol,ul{
 }
 
 
-#top{background:#80c846 url(/assets/images/plaster_wall_texture.jpg) fixed;box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;}
+#top{
+    background:#80c846 url("/assets/images/plaster_wall_texture.jpg") fixed;
+    box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;
+}
 #top .title{padding:30px 0;}
 #top h1{float:left;color: dimgray;font-size:35px;line-height:48px;text-shadow:2px 2px 0 rgba(0, 0, 0, 0.1);}
 
@@ -89,7 +100,6 @@ p{margin:1em 0;}
     display: inline;
 }
 
-.world-elt {
-    /*text-decoration: underline blue;*/
+li {
     margin-bottom: 0.25em;
 }

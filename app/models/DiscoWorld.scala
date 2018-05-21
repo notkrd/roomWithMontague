@@ -11,6 +11,10 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
                  val m_syntax: Map[(String, String), String] = shit_syntax
                 ) extends World(entities, relations1, relations2){
 
+  def possSuccs(a_cat: String): Set[String] = {
+    m_syntax.keySet.filter( lr => lr._1 == a_cat).map( lr => lr._2)
+  }
+
   def shitParse(parsed: List[Map[String, String]]): String = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val failure_msg: String = "This language does not determine whether or not <strong>" + full_phrase + "</strong>. You must be speaking some other language, if you are speaking language at all. "
@@ -19,7 +23,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     val its_false_msg: String = "It is not the case that <strong>" + full_phrase + "</strong>. "
 
     parsed match {
-      case Nil => "There is nothing here. "
+      case Nil => "There is nothing here, unuttered. "
       case head :: Nil => head("cat") match {
           case "Sentence" => "It seems we're done here, too late for meaning"
           case _ => failure_msg

@@ -12,7 +12,7 @@
         <h2>@some_cat</h2>
         <ul>
         @for(a_thing <- w.lexicon(some_cat).toSeq.sorted) {
-            <li class="world-elt" data-elt-val="@a_thing" data-cat="@some_cat"><a href="#nowhere">@a_thing</a></li>
+            <li><a class="verboten world-elt" href="#nowhere" data-elt-val="@a_thing" data-cat="@some_cat">@a_thing</a></li>
         }
         </ul>
     }
