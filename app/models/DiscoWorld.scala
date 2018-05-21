@@ -2,6 +2,16 @@ package models
 
 import scala.collection.immutable._
 
+/**
+  *
+  * @param entities a partial function from names to individuals
+  * @param relations1 a partial function from words to predicates in the model, where a predicate is a from entitie to truth values
+  * @param relations2 a partial function from words to binary relations in the model
+  * @param lexicon the words in the model, found by categories, useable to speak something
+  * @param name naming it something lets us bundle it up, choose among alternatives
+  * @param m_triggers phrases inciting monologues, with the monologues incited
+  * @param m_syntax phrase-structure style composition rules. Not currently used for parsing, but currently just to highlight permissible categories
+  */
 class DiscoWorld(entities: Map[KeyPhrase, Entity],
                  relations1: Map[KeyPhrase, PredSing],
                  relations2: Map[KeyPhrase, Entity => Entity => Boolean],
@@ -15,6 +25,11 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     m_syntax.keySet.filter( lr => lr._1 == a_cat).map( lr => lr._2)
   }
 
+  /**
+    * A really bad, case-by-case parser.
+    * @param parsed a list of phrases: each must have a syntactic category under the key "cat" and a phrase under the key "phrase"
+    * @return A string (not an actual semantic object!) commenting on the semantics of the sentence
+    */
   def shitParse(parsed: List[Map[String, String]]): String = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val failure_msg: String = "This language does not determine whether or not <strong>" + full_phrase + "</strong>. You must be speaking some other language, if you are speaking language at all. "
@@ -52,8 +67,36 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
               else { its_false_msg }
             }
             else { key_error_msg }
+          case ("Determiner", "Noun", "Intransitive Verb") =>
+            if((relations1.keySet contains snd("phrase")) &&
+              (relations1.keySet contains thd("phrase")))
+            {
+              if(relations1(thd("phrase"))(entities("the " + snd("phrase")))) { its_true_msg }
+              else { its_false_msg }
+            }
+            else { key_error_msg }
+          case ("Entity", "Transitive Verb", "Entity") =>
+            if((entities.keySet contains fst("phrase")) &&
+              (relations2.keySet contains snd("phrase")) &&
+              (entities.keySet contains thd("phrase")))
+            {
+              if(relations2(snd("phrase"))(entities(fst("phrase")))(entities(thd("phrase")))) { its_true_msg }
+              else { its_false_msg }
+            }
+            else { key_error_msg }
           case _ => failure_msg
           }
+      case fst :: snd :: rest => {
+        (fst("cat"), snd("cat")) match {
+          case ("Determiner", "Noun") => {
+            if(relations1.keySet contains snd("phrase")) {
+              shitParse(Map("cat" -> "Entity", "phrase" -> ("the " ++ snd("phrase"))) :: rest)
+            }
+            else { key_error_msg }
+          }
+          case _ => { failure_msg }
+        }
+      }
       case _ => failure_msg
     }
   }
