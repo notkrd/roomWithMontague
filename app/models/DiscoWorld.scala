@@ -1,6 +1,7 @@
 package models
 
 import scala.collection.immutable._
+import play.api.Logger
 
 /**
   *
@@ -33,7 +34,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   def shitParse(parsed: List[Map[String, String]]): String = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val failure_msg: String = "This language does not determine whether or not <strong>" + full_phrase + "</strong>. You must be speaking some other language, if you are speaking language at all. "
-    val key_error_msg: String = "It is not the case that <strong>" + full_phrase + "</strong>. "
+    val key_error_msg: String = "In saying <strong>" + full_phrase + "</strong>, you seem to have invented words, which is forbidden in the strongest terms. "
     val its_true_msg: String = "<strong>" + full_phrase.capitalize + "</strong>. "
     val its_false_msg: String = "It is not the case that <strong>" + full_phrase + "</strong>. "
 
@@ -57,6 +58,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
         }
       }
       case fst :: snd :: thd :: Nil =>
+        Logger.debug("Did 1 2 3")
         (fst("cat"), snd("cat"), thd("cat")) match {
           case ("Entity", "Auxiliary Verb", "Adjective") =>
             if((entities.keySet contains fst("phrase")) &&
@@ -90,14 +92,17 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
         (fst("cat"), snd("cat")) match {
           case ("Determiner", "Noun") => {
             if(relations1.keySet contains snd("phrase")) {
-              shitParse(Map("cat" -> "Entity", "phrase" -> ("the " ++ snd("phrase"))) :: rest)
+              val new_parse = Map("cat" -> "Entity", "phrase" -> ("the " ++ snd("phrase"))) :: rest
+              shitParse(new_parse)
             }
             else { key_error_msg }
           }
           case _ => { failure_msg }
         }
       }
-      case _ => failure_msg
+      case _ => {
+        failure_msg
+      }
     }
   }
 

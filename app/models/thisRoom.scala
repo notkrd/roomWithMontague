@@ -21,12 +21,14 @@ object thisRoom{
   val isAnimal: PredSing = Set("ANT", "PERSON", "DEER", "SPIDER")
   val isGlowing: PredSing = Set("SCREEN")
   val isScreen: PredSing = Set("SCREEN")
-  val isWater: PredSing = Set("water")
+  val isWater: PredSing = Set("CUP_WATER")
+  val isPerson: PredSing = Set("PERSON")
+  val isMathematician: PredSing = Set("MATHEMATICIAN")
 
   val seeTuples: Set[Tuple2[Entity,Entity]] = (for {a_thing <- d_entities.values} yield ("PERSON", a_thing)).toSet + (("ANT","PERSON"))
   val doesSee: PredBin = tuplesToPredBin(seeTuples)
 
-  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "alive" -> isAlive, "wet" -> isWet, "dish" -> isDish, "dead" -> isDead, "dirty" -> isDirty, "empty" -> isEmpty, "blue" -> isBlue, "animal" -> isAnimal, "cup" -> isCup, "red" -> isRed, "thick" -> isThick, "glows" -> isGlowing, "walls" -> isWalls, "blanket" -> isBlanket, "screen" -> isScreen, "water" -> isWater)
+  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "alive" -> isAlive, "wet" -> isWet, "dish" -> isDish, "dead" -> isDead, "dirty" -> isDirty, "empty" -> isEmpty, "blue" -> isBlue, "animal" -> isAnimal, "cup" -> isCup, "red" -> isRed, "thick" -> isThick, "glows" -> isGlowing, "walls" -> isWalls, "blanket" -> isBlanket, "screen" -> isScreen, "water" -> isWater, "mathematician" -> isMathematician, "person" -> isPerson)
   val d_rel2: Map[KeyPhrase, PredBin] = Map("sees" -> doesSee)
 
   val l_ents = Set("the blanket", "the water", "the person", "the walls", "the thick red paperback", "the dirty shirt", "the towel", "the window", "the spider", "the ant", "the kettle", "the empty glass", "the books")
@@ -40,7 +42,7 @@ object thisRoom{
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx)
+  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows)
 
   val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers)
 }
