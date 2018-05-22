@@ -58,7 +58,6 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
         }
       }
       case fst :: snd :: thd :: Nil =>
-        Logger.debug("Did 1 2 3")
         (fst("cat"), snd("cat"), thd("cat")) match {
           case ("Entity", "Auxiliary Verb", "Adjective") =>
             if((entities.keySet contains fst("phrase")) &&
@@ -83,6 +82,15 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
               (entities.keySet contains thd("phrase")))
             {
               if(relations2(snd("phrase"))(entities(fst("phrase")))(entities(thd("phrase")))) { its_true_msg }
+              else { its_false_msg }
+            }
+            else { key_error_msg }
+          case ("Entity", "Auxiliary Verb", "Entity") =>
+            if((entities.keySet contains fst("phrase")) &&
+              (Set("is", "are") contains snd("phrase")) &&
+              (entities.keySet contains thd("phrase")))
+            {
+              if(entities(fst("phrase")) == entities(thd("phrase"))) { its_true_msg }
               else { its_false_msg }
             }
             else { key_error_msg }

@@ -35,5 +35,5 @@ package object models {
     str.trim.capitalize ++ ". "
   }
 
-  val shit_syntax: Map[(String, String), String] = Map(("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity", ("Vacant", "Determiner") -> "Determiner", ("Determiner", "Noun") -> "Entity", ("Entity", "Intransitive Verb") -> "Sentence", ("Entity", "Auxiliary Verb") -> "Entity + Auxiliary Verb", ("Entity + Auxiliary Verb", "Adjective") -> "Sentence", ("Entity", "Transitive Verb") -> "Entity + Transitive Verb", ("Entity + Transitive Verb", "Entity") -> "Sentence")
+  val shit_syntax: Map[(String, String), String] = Map(("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity", ("Vacant", "Determiner") -> "Determiner", ("Determiner", "Noun") -> "Entity", ("Entity", "Intransitive Verb") -> "Sentence", ("Entity", "Auxiliary Verb") -> "Entity + Auxiliary Verb", ("Entity + Auxiliary Verb", "Adjective") -> "Sentence", ("Entity + Auxiliary Verb", "Entity") -> "Sentence", ("Entity", "Transitive Verb") -> "Entity + Transitive Verb", ("Entity + Transitive Verb", "Entity") -> "Sentence")
 }

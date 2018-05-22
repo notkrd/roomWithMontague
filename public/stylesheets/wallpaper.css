@@ -20,6 +20,11 @@ a.verboten {
     /*margin: 10px 30px 10px 30 px;*/
 }
 
+.epigraph {
+    margin: 15px 10vw;
+    width: 80vw;
+    max-width: 900px;
+}
 
 #top{
     background:#80c846 url("/assets/images/plaster_wall_texture.jpg") fixed;
@@ -70,11 +75,12 @@ p{margin:1em 0;}
 }
 
 #discourse {
-    max-width: 60vw;
+    width: 60vw;
+    max-width: 800px;
     height: 65vh;
     overflow-y: scroll;
     overflow-scrolling: touch;
-    margin: 40px 20px;
+    margin: 20px 20px;
     border: 20px solid white;
     background-color: white;
 
@@ -86,7 +92,7 @@ p{margin:1em 0;}
     height: 65vh;
     overflow-y: scroll;
     overflow-scrolling: touch;
-    margin: 40px 20px;
+    margin: 20px 20px;
     border: 20px solid white;
     background-color: white;
 }

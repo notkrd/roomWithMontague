@@ -28,7 +28,7 @@ object thatRoom{
   var l_ns = Set("towel", "mathematician", "semanticist", "successful real estate investor", "water", "organist")
   var l_aux_verbs = Set("is")
   var l_dets = Set("a(n)", "the")
-  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> (d_entities.keySet -- Set("the semanticist", "the organist", "the successful real estate investor")), "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux_verbs, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_dets)
+  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux_verbs, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_dets)
 
   val discRepresentation = new Box(Seq(), Seq())
 
