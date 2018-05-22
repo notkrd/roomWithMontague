@@ -15,20 +15,23 @@ object thatRoom{
   val isSolid: PredSing = Set()
   val isDead: PredSing = Set("MONTAGUE")
   val isWater: PredSing = Set("water")
+  val isFull: PredSing = Set("WALLET", "MONTAGUE", "SOAP_DISH")
 
   val seeTuples: Set[Tuple2[Entity,Entity]] = (for {a_thing <- d_entities.values} yield ("AUTHOR", a_thing)).toSet ++ Set(("ANT","MONTAGUE"), ("ANT", "TOWEL"), ("ANT", "FLOOR"))
   val doesSee: PredBin = tuplesToPredBin(seeTuples)
   val doesCover: PredBin = tuplesToPredBin(Set(("TOWEL", "MONTAGUE"), ("WALLET", "SOAP_DISH"), ("WALLS","FLOOR")))
 
-  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "wet" -> isWet, "towel" -> isTowel, "dead" -> isDead, "mathemetician" -> isMathemetician, "philosopher" -> isPhilosopher, "succesful real estate investor" -> isRealEstateInvestor, "water" -> isWater, "orgainst" -> isOrganist)
+  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "wet" -> isWet, "towel" -> isTowel, "dead" -> isDead, "mathemetician" -> isMathemetician, "philosopher" -> isPhilosopher, "succesful real estate investor" -> isRealEstateInvestor, "water" -> isWater, "orgainst" -> isOrganist, "full" -> isFull)
   val d_rel2: Map[KeyPhrase, PredBin] = Map("sees" -> doesSee, "covers" -> doesCover)
 
   var l_verbs = Set("lives")
-  var l_adjs = Set("wet", "dead")
+  var l_adjs = Set("wet", "dead", "full")
   var l_ns = Set("towel", "mathematician", "semanticist", "successful real estate investor", "water", "organist")
   var l_aux_verbs = Set("is")
   var l_dets = Set("a(n)", "the")
-  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux_verbs, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_dets)
+  var l_quants = Set("some", "all", "no")
+  var l_conj = Set("and", "or")
+  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux_verbs, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_dets, "Quantifiers" -> l_quants, "Conjunction" -> l_conj)
 
   val discRepresentation = new Box(Seq(), Seq())
 

@@ -41,4 +41,6 @@ object Monologue {
   val wet = new Monologue("The mathematician is wet", "How wetness too can be of different kinds; the wetware implements certain inexplicable diversions. The Fefermans, in their biography of Tarski - a cumulative page and a half of which is the primary public biographical resource on Montague - indicate somewhere, well after Montague's death in 1971, near Tarski's death in 1983, Tarski calling Montague one of only two mathematicians Tarski enjoyed spending time with. The Fefermans, both Tarski's students, characterize this a polite lie. Tarski happened to board the last ship to leave Poland for the US, in September 1939, for a positivism-inspired Unity of Science conference, on which boat he happened to meet a student of Quine's. Quine, among less famous others, arranged for Tarski to remain in Harvard, by the River Charles. Indianapolis is the only large city in the US not on a body of water.")
 
   val knots = new Monologue("Various Knots", "I imagine various knots. This is a dark turn of mind. One must consider the semantics of holes. It is possible that the strangling towel made only an unknot.")
+
+  val window = new Monologue("Window light", "The slat blind sits halfway down the window, above the cups and so on. <q>All I need is a window not to write</q>, or something like that, the window extraneous.")
 }

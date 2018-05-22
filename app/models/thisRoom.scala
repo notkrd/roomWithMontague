@@ -38,7 +38,8 @@ object thisRoom{
   var l_ns = Set("dish", "animal", "cup", "mathematician", "walls", "person", "screen", "water", "blanket")
   var l_aux = Set("is", "are")
   var l_conj = Set("and","or")
-  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux, "Conjunction" -> l_conj, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_det)
+  var l_quants = Set("some", "all", "no")
+  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux, "Conjunction" -> l_conj, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_det, "Quantifiers" -> l_quants)
 
   val discRepresentation = new Box(Seq(), Seq())
 
