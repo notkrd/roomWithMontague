@@ -2,6 +2,8 @@ package models
 
 import scala.collection.immutable._
 import play.api.Logger
+import scala.util.parsing.combinator.Parsers
+import scala.util.parsing.input.{Reader, Position, NoPosition}
 
 /** Object for a "room" in the fiction, to be described.
   *
@@ -26,12 +28,27 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     m_syntax.keySet.filter( lr => lr._1 == a_cat).map( lr => lr._2)
   }
 
+  def charSet(p: PredSing): Set[Entity] = entities_set.filter(p)
+
+  def charList(p: PredSing): List[Entity] = charSet(p).toList
+
+  def binCharSet(p: PredBin): Set[(Entity, Entity)] = {
+    val pairs: Set[(Entity, Entity)] = for {
+      x <- entities_set
+      y <- entities_set
+    } yield (x, y)
+
+    pairs.filter( v => p(v._1)(v._2))
+  }
+
+  def concatPhrase(parsed: List[Map[String, String]]): String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
+
   /** Message for parse error
     *
     * @param phr_in phrase to parse
     * @return the message
     */
-  def failure_for(phr_in: String): String = "This language does not determine whether or not <strong>" ++ phr_in ++ "</strong>. You must be speaking some other language, if you are speaking language at all. "
+  def failure_for(phr_in: String, err: String = ""): String = "This language does not determine whether or not <strong>" ++ phr_in ++ "</strong>. You must be speaking some other language, if you are speaking language at all. " + err
 
   /** Message for key error
     *
@@ -54,92 +71,260 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     */
   def falsity_for(phr_in: String): String = "It is not the case that <strong>" + phr_in + "</strong>. "
 
-  /** A really bad, case-by-case parser.
-    *
-    * @param parsed a list of phrases: each must have a syntactic category under the key "cat" and a phrase under the key "phrase"
-    * @return A string (not an actual semantic object!) commenting on the semantics of the sentence
-    */
-  def shitParse(parsed: List[Map[String, String]]): String = {
-    val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
-    val failure_msg: String = failure_for(full_phrase)
-    val key_error_msg: String = key_error_for(full_phrase)
-    val its_true_msg: String = truth_for(full_phrase)
-    val its_false_msg: String = falsity_for(full_phrase)
+  def parse_error_for(parse_error: String)(phr_in: String): String = "At <strong>" + phr_in + "</strong> the machine spins out, elsewhere, grinding. It leaves these notes: " + parse_error
 
-    parsed match {
-      case Nil => "There is nothing here, unuttered. "
-      case head :: Nil => head("cat") match {
-          case "Sentence" => "It seems we're done here, too late for meaning"
-          case _ => failure_msg
-        }
-      case fst :: snd :: Nil => {
-        (fst("cat"), snd("cat")) match {
-          case ("Entity", "Intransitive Verb") =>
-            if ((entities.keySet contains fst("phrase")) &&
-              (relations1.keySet contains snd("phrase")))
-            {
-              if(relations1(snd("phrase"))(entities(fst("phrase")))) { its_true_msg }
-              else { its_false_msg }
+  val nothing_msg = "There is nothing here, unuttered. "
+
+  /* Now we go in for the parser combinators, wish me luck! */
+
+  trait DiscourseParser extends Parsers {
+    type Elem = (String, String)
+
+    class SynReader(phrases: List[(String, String)]) extends Reader[Elem] {
+      def first: Elem = phrases.head
+      def rest: Reader[Elem] = new SynReader(phrases.tail)
+      def atEnd: Boolean = phrases.isEmpty
+      def pos: Position = NoPosition
+
+      val full_phrase: String = phrases.foldLeft("")((phrase_made, fst_phr) => phrase_made + " " + fst_phr._2)
+    }
+
+    /** Takes a list of maps to a list of (cat, phrase) pairs
+      *
+      * @param some_phrases List of maps corresponding to phrases with entries for "cat" and "phrase"
+      * @return List in same order with tagged phrases for all the maps that have the necessary keys
+      */
+    def mapToReader(some_phrases: List[Map[String, String]]): Input = {
+      val valid_phrases: List[Map[String, String]] = some_phrases.filter( phr => Set("cat", "phrase").subsetOf(phr.keySet) )
+      val cat_phrase_pairs: List[(String, String)] = valid_phrases.map( phr => (phr("cat"), phr("phrase")))
+      new SynReader(cat_phrase_pairs)
+    }
+
+    def PredTokenParser(of_cat: String): Parser[PredSing] = new Parser[PredSing] {
+      def apply(in: Input): ParseResult[PredSing] = {
+        if(!in.atEnd) {
+          val h = in.first
+          if (h._1 == of_cat) {
+            if (relations1.keySet contains h._2) {
+              Success(relations1(h._2), in.rest)
             }
-            else { key_error_msg }
-          case _ => failure_msg
-        }
-      }
-      case fst :: snd :: thd :: Nil =>
-        (fst("cat"), snd("cat"), thd("cat")) match {
-          case ("Entity", "Auxiliary Verb", "Adjective") =>
-            if((entities.keySet contains fst("phrase")) &&
-              (Set("is","are") contains snd("phrase")) &&
-              (relations1.keySet contains thd("phrase")))
-            {
-              if(relations1(thd("phrase"))(entities(fst("phrase")))) { its_true_msg }
-              else { its_false_msg }
+            else {
+              Error(key_error_for(h._2), in)
             }
-            else { key_error_msg }
-          case ("Determiner", "Noun", "Intransitive Verb") =>
-            if((relations1.keySet contains snd("phrase")) &&
-              (relations1.keySet contains thd("phrase")))
-            {
-              if(relations1(thd("phrase"))(entities("the " + snd("phrase")))) { its_true_msg }
-              else { its_false_msg }
-            }
-            else { key_error_msg }
-          case ("Entity", "Transitive Verb", "Entity") =>
-            if((entities.keySet contains fst("phrase")) &&
-              (relations2.keySet contains snd("phrase")) &&
-              (entities.keySet contains thd("phrase")))
-            {
-              if(relations2(snd("phrase"))(entities(fst("phrase")))(entities(thd("phrase")))) { its_true_msg }
-              else { its_false_msg }
-            }
-            else { key_error_msg }
-          case ("Entity", "Auxiliary Verb", "Entity") =>
-            if((entities.keySet contains fst("phrase")) &&
-              (Set("is", "are") contains snd("phrase")) &&
-              (entities.keySet contains thd("phrase")))
-            {
-              if(entities(fst("phrase")) == entities(thd("phrase"))) { its_true_msg }
-              else { its_false_msg }
-            }
-            else { key_error_msg }
-          case _ => failure_msg
           }
-      case fst :: snd :: rest => {
-        (fst("cat"), snd("cat")) match {
-          case ("Determiner", "Noun") => {
-            if(relations1.keySet contains snd("phrase")) {
-              val new_parse = Map("cat" -> "Entity", "phrase" -> ("the " ++ snd("phrase"))) :: rest
-              shitParse(new_parse)
-            }
-            else { key_error_msg }
+          else {
+            Failure(failure_for(h._2), in)
           }
-          case _ => { failure_msg }
         }
-      }
-      case _ => {
-        failure_msg
+        else {
+          Failure(nothing_msg, in)
+        }
       }
     }
+
+    val NTokenParser: Parser[PredSing] = PredTokenParser("Noun")
+
+    /** Parses an adjective - as a function from PredSing to PredSing
+      *
+      */
+    val AdjTokenParser:  Parser[PredSing] = PredTokenParser("Adjective")
+
+    /** Parses a verb phrase, as a PredSing
+      *
+      */
+    val VITokenParser: Parser[PredSing] = PredTokenParser("Intransitive Verb")
+
+    /** Parses an entity / noun phrase
+      *
+      */
+
+    val VTTokenParser: Parser[PredBin] = new Parser[PredBin] {
+      def apply(in: Input): ParseResult[PredBin] = {
+        if(!in.atEnd) {
+          val h = in.first
+          if (h._1 == "Transitive Verb") {
+            if (relations2.keySet contains h._2) {
+              Success(relations2(h._2), in.rest)
+            }
+            else {
+              Error(key_error_for(h._2), in)
+            }
+          }
+          else {
+            Failure(failure_for(h._2), in)
+          }
+        }
+        else {
+          Failure(nothing_msg, in)
+        }
+      }
+    }
+
+    val NPTokenParser: Parser[Entity] = new Parser[Entity] {
+
+      def apply(in: Input): ParseResult[Entity] = {
+        if (!in.atEnd) {
+          val h = in.first
+          if (h._1 == "Entity") {
+            if (entities.keySet contains h._2) {
+              Success(entities(h._2), in.rest)
+            }
+            else {
+              Error(key_error_for(h._2), in)
+            }
+          }
+          else {
+            Failure(failure_for(h._2), in)
+          }
+        }
+        else {
+          Failure(nothing_msg, in)
+        }
+      }
+    }
+
+    /* Compound / complex parsers */
+
+    def mod_with(p1: PredSing)(p2: PredSing): PredSing = {
+      (charSet(p1) intersect charSet(p2)) contains _
+    }
+
+    val PredModParser: Parser[PredSing] => PredSing => Parser[PredSing] = p => mod => {
+      p ^^ mod_with(mod)
+    }
+
+    val ANParser: Parser[PredSing] = (AdjTokenParser >> PredModParser(NTokenParser)) | (AdjTokenParser >> PredModParser(ANParser))
+
+
+    val NParser: Parser[PredSing] = NTokenParser | ANParser
+
+    /** Class for determiners. For now, I'm treating determiners (really only "the") as partial functions from sets to entities
+      *
+      */
+    abstract class Determiner
+    case class detThe() extends Determiner
+    case class detA() extends Determiner
+
+    val func_the: PartialFunction[PredSing, Entity] = new PartialFunction[PredSing, Entity] {
+      def apply(p: PredSing): Entity = charList(p).head
+      def isDefinedAt(p: PredSing): Boolean = charList(p).nonEmpty
+    }
+
+    val detMeaning: Determiner => Parser[Entity] = {
+      case _: detThe => NParser ^? (func_the, (_: PredSing) => "There is nowhere for this \"the\" to point")
+      case _ => NParser ^? (func_the, (_: PredSing) => "There is nowhere for this determiner to point")
+    }
+
+    /** Parses a determiner.
+      *
+      */
+    val DetTokenParser: Parser[Determiner] = new Parser[Determiner] {
+
+      def apply(in: Input): ParseResult[Determiner] = {
+        if (!in.atEnd) {
+          val h = in.first
+          if (h._1 == "Determiner") {
+            h._2 match {
+              case "the" => Success(detThe(), in.rest)
+              case "a" => Success(detA(), in.rest)
+              case "an" => Success(detA(), in.rest)
+              case _ => Success(detThe(), in.rest)
+            }
+          }
+          else {
+            Failure(failure_for(h._2), in.rest)
+          }
+        }
+        else {
+          Failure(nothing_msg, in)
+        }
+      }
+    }
+
+    val DetNParser: Parser[Entity] = DetTokenParser >> detMeaning
+
+    val NPParser: Parser[Entity] = NPTokenParser | DetNParser
+
+    def VTPartialApp: PredBin => Parser[PredSing] = pred => NPParser ^^ (e => pred(e))
+
+    val VTNPParser: Parser[PredSing] = VTTokenParser >> VTPartialApp
+
+    abstract class Auxiliary
+    case class AuxIs() extends Auxiliary
+
+    /** Parses an auxiliary verb.
+      *
+      */
+    val AuxTokenParser: Parser[Auxiliary] = new Parser[Auxiliary] {
+
+      def apply(in: Input): ParseResult[Auxiliary] = {
+        if (!in.atEnd) {
+          val h = in.first
+          if (h._1 == "Auxiliary Verb") {
+            h._2 match {
+              case "is" => Success(AuxIs(), in.rest)
+              case _ => Success(AuxIs(), in.rest)
+            }
+          }
+          else {
+            Failure(failure_for(h._2), in.rest)
+          }
+        }
+        else {
+          Failure(nothing_msg, in)
+        }
+      }
+    }
+
+    val AuxNPParser: Parser[PredSing] = NPParser ^^ (ent => _ == ent)
+
+    val AuxAdjParser: Parser[PredSing] = AdjTokenParser ^^ (adj => e => adj(e))
+
+    val auxMeaning: Auxiliary => Parser[PredSing] = {
+      case _: AuxIs => AuxAdjParser | AuxNPParser
+      case _ => AuxAdjParser | AuxNPParser
+    }
+
+    val auxPhrParser: Parser[PredSing] = AuxTokenParser >> auxMeaning
+
+    val VPParser: Parser[PredSing] = VITokenParser | VTNPParser | auxPhrParser
+
+    val ApplyVP: Entity => Parser[Boolean] = ent => VPParser ^^ (vp => vp(ent))
+
+    val SParser: Parser[Boolean] = NPParser >> ApplyVP
+
+  }
+
+  object MontagueParser extends DiscourseParser {
+    val sample_in = new SynReader(List(("Determiner", "the"),("Noun", "mathematician"),("Intransitive Verb", "lives")))
+    val sample_adjs = new SynReader(List(("Determiner", "the"),("Adjective", "thick"),("Adjective", "red"),("Noun", "book"),("Intransitive Verb", "lives")))
+
+    def eval_phrases(phrs: List[Map[String, String]]): ParseResult[Boolean] = SParser(mapToReader(phrs))
+
+    def comment_on(phrs: List[Map[String, String]]): String = {
+      val full_phrase = concatPhrase(phrs)
+      eval_phrases(phrs) match {
+        case Success(v, _) => {
+          v match {
+            case true => truth_for(full_phrase)
+            case false => falsity_for(full_phrase)
+          }
+        }
+        case Failure(err, _) => failure_for(full_phrase, err)
+        case Error(err, _) => parse_error_for(err)(full_phrase)
+        }
+      }
+    }
+
+  /* Combinators over */
+
+  /** Evaluates an utterance uses parsing combinators
+    *
+    * @param phrase_maps a list of phrases, where each map has "cat" and "phrase" keys
+    * @return A string response using the evaluation
+    */
+  def combinatorsParse(phrase_maps: List[Map[String, String]]): String = {
+    MontagueParser.comment_on(phrase_maps)
   }
 
   /** Evaluate a sentence to provide a response to give the reader
@@ -150,10 +335,10 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   def evalSent(parsed: List[Map[String, String]]): String = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val response: String = if(m_triggers.keySet contains full_phrase) {
-      shitParse(parsed) ++ "<br><br>" ++ m_triggers(full_phrase).text
+      combinatorsParse(parsed) ++ "<br><br>" ++ m_triggers(full_phrase).text
     }
     else {
-      shitParse(parsed)
+      combinatorsParse(parsed)
     }
       response + "</br></br>"
   }

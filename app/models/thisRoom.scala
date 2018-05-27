@@ -19,17 +19,18 @@ object thisRoom{
   val isWalls: PredSing = Set("WALLS")
   val isBlanket: PredSing = Set("BLANKET")
   val isWindow: PredSing = Set("window")
-  val isAnimal: PredSing = Set("ANT", "PERSON", "DEER", "SPIDER")
+  val isAnimal: PredSing = Set("ANT", "PERSON", "SPIDER")
   val isGlowing: PredSing = Set("SCREEN", "WINDOW")
   val isScreen: PredSing = Set("SCREEN")
   val isWater: PredSing = Set("CUP_WATER")
   val isPerson: PredSing = Set("PERSON")
-  val isMathematician: PredSing = Set("MATHEMATICIAN")
+  val isMathematician: PredSing = Set("PERSON")
+  val isBook: PredSing = Set("DHALGREN","LINGUISTICS_TEXTBOOK")
 
-  val seeTuples: Set[Tuple2[Entity,Entity]] = (for {a_thing <- d_entities.values} yield ("PERSON", a_thing)).toSet + (("ANT","PERSON"))
+  val seeTuples: Set[Tuple2[Entity,Entity]] = (for {a_thing <- d_entities.values} yield (a_thing, "PERSON")).toSet + (("PERSON", "ANT"))
   val doesSee: PredBin = tuplesToPredBin(seeTuples)
 
-  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "alive" -> isAlive, "wet" -> isWet, "dish" -> isDish, "dead" -> isDead, "dirty" -> isDirty, "empty" -> isEmpty, "blue" -> isBlue, "animal" -> isAnimal, "cup" -> isCup, "red" -> isRed, "thick" -> isThick, "glows" -> isGlowing, "walls" -> isWalls, "blanket" -> isBlanket, "screen" -> isScreen, "water" -> isWater, "mathematician" -> isMathematician, "person" -> isPerson, "window" -> isWindow)
+  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "alive" -> isAlive, "wet" -> isWet, "dish" -> isDish, "dead" -> isDead, "dirty" -> isDirty, "empty" -> isEmpty, "blue" -> isBlue, "animal" -> isAnimal, "cup" -> isCup, "red" -> isRed, "thick" -> isThick, "glows" -> isGlowing, "walls" -> isWalls, "blanket" -> isBlanket, "screen" -> isScreen, "water" -> isWater, "mathematician" -> isMathematician, "person" -> isPerson, "window" -> isWindow, "book" -> isBook)
 
   val d_rel2: Map[KeyPhrase, PredBin] = Map("sees" -> doesSee)
 
@@ -37,7 +38,7 @@ object thisRoom{
   var l_det = Set("a", "an", "the")
   var l_verbs = Set("lives", "glows")
   var l_adjs = Set("wet", "dead", "alive", "empty", "blue", "dirty", "red", "thick")
-  var l_ns = Set("dish", "animal", "cup", "mathematician", "walls", "person", "screen", "water", "blanket", "window")
+  var l_ns = Set("dish", "animal", "cup", "mathematician", "walls", "person", "screen", "water", "blanket", "window", "book")
   var l_aux = Set("is", "are")
   var l_conj = Set("and","or")
   var l_quants = Set("some", "all", "no")

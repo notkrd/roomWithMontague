@@ -23,15 +23,13 @@ function updateWithCat(some_json) {
         var all_elts = $(".world-elt");
         all_elts.removeClass("permitted");
         all_elts.addClass("verboten");
-        for (var an_opt in some_json.new_opts){
-            if(some_json.new_opts.hasOwnProperty(an_opt)) {
-                var a_cat = some_json.new_opts[an_opt];
-                console.log(a_cat);
-                var to_change = $('.world-elt[data-cat="' + a_cat + '"]');
-                to_change.removeClass("verboten");
-                to_change.addClass("permitted");
-            }
-        }
+    for (var an_opt in some_json.new_opts){
+        var a_cat = some_json.new_opts[an_opt];
+        console.log(a_cat);
+        var to_change = $('.world-elt[data-cat="' + a_cat + '"]');
+        to_change.removeClass("verboten");
+        to_change.addClass("permitted");
+    }
     }
 }
 
