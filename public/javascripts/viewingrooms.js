@@ -15,7 +15,7 @@ function requestComposition(l_cat, r_cat) {
 }
 
 function updateWithCat(some_json) {
-    console.log(some_json)
+    console.log(some_json);
     if(some_json.hasOwnProperty('new_cat')) {
         theMessage().data("cat", some_json.new_cat)
     }
@@ -24,11 +24,13 @@ function updateWithCat(some_json) {
         all_elts.removeClass("permitted");
         all_elts.addClass("verboten");
         for (var an_opt in some_json.new_opts){
-            var a_cat = some_json.new_opts[an_opt];
-            console.log(a_cat);
-            var to_change = $('.world-elt[data-cat="' + a_cat + '"]');
-            to_change.removeClass("verboten");
-            to_change.addClass("permitted");
+            if(some_json.hasOwnProperty("new_opts") && some_json.new_opts.hasOwnProperty("an_opt")) {
+                var a_cat = some_json.new_opts[an_opt];
+                console.log(a_cat);
+                var to_change = $('.world-elt[data-cat="' + a_cat + '"]');
+                to_change.removeClass("verboten");
+                to_change.addClass("permitted");
+            }
         }
     }
 }
@@ -58,6 +60,13 @@ function theWorld() {
 
 function addToLog(stuff) {
     theLog().prepend(stuff);
+    localStorage.setItem("discourse_" + theWorld(), theLog().html());
+}
+
+function showData() {
+    var the_data = JSON.stringify(theMessage().data("parsed"));
+    theLog().prepend("You are saying, or might as well be saying, " + the_data + "<br><br>");
+    localStorage.setItem("discourse_" + theWorld(), theLog().html());
 }
 
 function replaceMsg(some_str) {
@@ -76,6 +85,7 @@ function clearMsg() {
 
 function restartDiscourse() {
     theLog().text("");
+    localStorage.setItem("discourse_" + theWorld(), theLog().html());
 }
 
 function tryToUtterPhrase(some_str, some_cat) {
@@ -103,6 +113,11 @@ function initializeDiscourse(the_world) {
         theMessage().data("parsed", []);
         theMessage().data("cat", "Empty");
     }
+
+    var past_discourse = localStorage.getItem("discourse_" + the_world);
+    if (past_discourse != null) {
+        theLog().html(past_discourse);
+    }
 }
 
 // Initialization
@@ -114,7 +129,8 @@ $(function() {
 
     $(".world-elt").click(function () {tryToUtterPhrase($(this).data("elt-val"), $(this).data("cat"))});
     $("#assert-button").click(function () {makeAssertion(theMessage().text(), theMessage().data("parsed"), theWorld())});
-    $("#clear-button").click(function () {clearMsg()});
-    $("#restart-button").click(function () {restartDiscourse()});
+    $("#clear-button").click(clearMsg);
+    $("#restart-button").click(restartDiscourse);
+    $("#structure-button").click(showData);
 
 });

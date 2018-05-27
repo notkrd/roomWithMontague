@@ -3,7 +3,7 @@ package models
 import scala.collection.immutable._
 import play.api.Logger
 
-/**
+/** Object for a "room" in the fiction, to be described.
   *
   * @param entities a partial function from names to individuals
   * @param relations1 a partial function from words to predicates in the model, where a predicate is a from entitie to truth values
@@ -26,17 +26,45 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     m_syntax.keySet.filter( lr => lr._1 == a_cat).map( lr => lr._2)
   }
 
-  /**
-    * A really bad, case-by-case parser.
+  /** Message for parse error
+    *
+    * @param phr_in phrase to parse
+    * @return the message
+    */
+  def failure_for(phr_in: String): String = "This language does not determine whether or not <strong>" ++ phr_in ++ "</strong>. You must be speaking some other language, if you are speaking language at all. "
+
+  /** Message for key error
+    *
+    * @param phr_in phrase to parse
+    * @return the message
+    */
+  def key_error_for(phr_in: String): String =  "In saying <strong>" + phr_in + "</strong>, you or the programmer seem to have invented words, which is forbidden in the strongest terms. "
+
+  /** Message for successful true parse
+    *
+    * @param phr_in phrase to parse
+    * @return the message
+    */
+  def truth_for(phr_in: String): String = "<strong>" + phr_in.capitalize + "</strong>. "
+
+  /** Message for successful false parse
+    *
+    * @param phr_in phrase to parse
+    * @return the message
+    */
+  def falsity_for(phr_in: String): String = "It is not the case that <strong>" + phr_in + "</strong>. "
+
+  /** A really bad, case-by-case parser.
+    *
     * @param parsed a list of phrases: each must have a syntactic category under the key "cat" and a phrase under the key "phrase"
     * @return A string (not an actual semantic object!) commenting on the semantics of the sentence
     */
   def shitParse(parsed: List[Map[String, String]]): String = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
-    val failure_msg: String = "This language does not determine whether or not <strong>" + full_phrase + "</strong>. You must be speaking some other language, if you are speaking language at all. "
-    val key_error_msg: String = "In saying <strong>" + full_phrase + "</strong>, you seem to have invented words, which is forbidden in the strongest terms. "
-    val its_true_msg: String = "<strong>" + full_phrase.capitalize + "</strong>. "
-    val its_false_msg: String = "It is not the case that <strong>" + full_phrase + "</strong>. "
+    val failure_msg: String = failure_for(full_phrase)
+    val key_error_msg: String = key_error_for(full_phrase)
+    val its_true_msg: String = truth_for(full_phrase)
+    val its_false_msg: String = falsity_for(full_phrase)
 
     parsed match {
       case Nil => "There is nothing here, unuttered. "
@@ -114,6 +142,11 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     }
   }
 
+  /** Evaluate a sentence to provide a response to give the reader
+    *
+    * @param parsed phrase to evaluate, as a sequence of tagged phrases
+    * @return Message corresponding to the parse
+    */
   def evalSent(parsed: List[Map[String, String]]): String = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val response: String = if(m_triggers.keySet contains full_phrase) {
