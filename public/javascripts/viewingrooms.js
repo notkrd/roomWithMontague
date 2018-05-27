@@ -24,7 +24,7 @@ function updateWithCat(some_json) {
         all_elts.removeClass("permitted");
         all_elts.addClass("verboten");
         for (var an_opt in some_json.new_opts){
-            if(some_json.hasOwnProperty("new_opts") && some_json.new_opts.hasOwnProperty("an_opt")) {
+            if(some_json.new_opts.hasOwnProperty(an_opt)) {
                 var a_cat = some_json.new_opts[an_opt];
                 console.log(a_cat);
                 var to_change = $('.world-elt[data-cat="' + a_cat + '"]');
