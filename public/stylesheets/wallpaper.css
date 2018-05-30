@@ -1,6 +1,8 @@
 
 ol,ul{
     list-style: circle inside none;
+    margin-left: 3vw;
+    padding: 0;
 }
 
 a.permitted {
@@ -21,28 +23,37 @@ a.verboten {
 }
 
 .epigraph {
-    margin: 15px 10vw;
+    margin: 2vh 10vw;
+    height: 4vh;
     width: 80vw;
     max-width: 900px;
+    max-height: 100px;
 }
 
 #top{
-    background:#80c846 url("/assets/images/plaster_wall_texture.jpg") fixed;
-    box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;padding:0;position:relative;
+    background: #80c846 url("/assets/images/plaster_wall_texture.jpg") fixed;
+    box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;
+    padding:0;
+    position:relative;
+    height: 15vh;
 }
-#top .title{padding:30px 0;}
-#top h1{float:left;color: dimgray;font-size:35px;line-height:48px;text-shadow:2px 2px 0 rgba(0, 0, 0, 0.1);}
+#top h1{
+    color: dimgray;
+    font-size: 2.2em;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);}
 
-#top h1 a{text-decoration:none;color:#fff;}
-
-.title{width:40vw;margin:0 auto;box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;padding:60px 0;}
-.title:after{content:" ";display:block;clear:both;}
+.title{
+    width: 85vw;
+    text-align: center;
+    margin: 0 auto;
+    padding: 1vh 0;
+}
 
 
 body{
     color:#555;
-    font:15px "Helvetica Nueue",sans-serif;
-    padding:0px 0 0px;
+    font-family: "Helvetica Nueue",sans-serif;
+    padding:0 0;
     background-color: gainsboro;
 }
 
@@ -75,37 +86,49 @@ p{margin:1em 0;}
 }
 
 #discourse {
-    width: 60vw;
+    width: 45vw;
     max-width: 800px;
     height: 60vh;
     overflow-y: scroll;
+    word-wrap: break-word;
     overflow-scrolling: touch;
-    margin: 20px 20px;
-    border: 20px solid white;
+    margin: 3vh 3vw;
+    border: 3vh solid white;
     background-color: white;
 
 }
 
 #world-vals {
-    width: 30vw;
+    width: 40vw;
     max-width: 320px;
     height: 60vh;
     overflow-y: scroll;
     overflow-scrolling: touch;
-    margin: 20px 20px;
-    border: 20px solid white;
+    margin: 3vh 3vw;
+    border: 3vh solid white;
     background-color: white;
 }
 
 #assertion {
-    font-size: xx-large;
+    font-size: x-large;
     color: black;
 }
 
 #message {
     display: inline;
+    line-height: 2em;
 }
 
 li {
     margin-bottom: 0.25em;
+}
+
+@media (max-width: 800px) {
+    .epigraph {
+        font-size: 2vw;
+    }
+
+    #top h1 {
+        font-size: 4vw;
+    }
 }

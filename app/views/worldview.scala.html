@@ -9,13 +9,16 @@
     </div>
 
     @for(some_cat <- w.lexicon.keys.toSeq.sorted){
-        <h2>@some_cat</h2>
+        <h4>@some_cat</h4>
         <ul>
         @for(a_thing <- w.lexicon(some_cat).toSeq.sorted) {
             <li><a class="verboten world-elt" href="#nowhere" data-elt-val="@a_thing" data-cat="@some_cat">@a_thing</a></li>
         }
         </ul>
     }
+
+    <a href="https://github.com/notkrd/roomWithMontague" id="world-source">Source [SPOILERS!]</a>
+
     <br>
     <br>
 </div>

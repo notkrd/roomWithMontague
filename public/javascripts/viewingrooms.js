@@ -63,7 +63,7 @@ function addToLog(stuff) {
 
 function showData() {
     var the_data = JSON.stringify(theMessage().data("parsed"));
-    theLog().prepend("You are saying, or might as well be saying, " + the_data + "<br><br>");
+    theLog().prepend("You are saying, or might as well be saying, " + the_data + ". <a href='https://github.com/notkrd/roomWithMontague/blob/master/app/models/DiscoWorld.scala'>Parser source</a> <br><br>");
     localStorage.setItem("discourse_" + theWorld(), theLog().html());
 }
 
@@ -93,18 +93,20 @@ function tryToUtterPhrase(some_str, some_cat) {
     theMessage().data("cat", updateCat(some_cat));
 }
 
-
 function initializeDiscourse(the_world) {
     if (the_world === "This room") {
         theMessage().text("the water is wet");
         theMessage().data("parsed", [{"phrase": "the water", "cat": "Entity"}, {"phrase": "is", "cat": "Auxiliary Verb"}, {"phrase": "wet", "cat": "Adjective"}]);
         theMessage().data("cat", "Sentence");
+        $("#world-source").attr("href", "https://github.com/notkrd/roomWithMontague/blob/master/app/models/thisRoom.scala")
     }
 
     else if (the_world === "That room") {
         theMessage().text("the mathematician is dead");
         theMessage().data("parsed", [{"phrase": "the mathematician", "cat": "Entity"}, {"phrase": "is", "cat": "Auxiliary Verb"}, {"phrase": "dead", "cat": "Adjective"}]);
         theMessage().data("cat", "Sentence");
+        $("#world-source").attr("href", "https://github.com/notkrd/roomWithMontague/blob/master/app/models/thatRoom.scala")
+
     }
     else {
         theMessage.text("");

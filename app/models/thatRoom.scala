@@ -21,7 +21,7 @@ object thatRoom{
   val doesSee: PredBin = tuplesToPredBin(seeTuples)
   val doesCover: PredBin = tuplesToPredBin(Set(("MONTAGUE", "TOWEL"), ("SOAP_DISH", "WALLET"), ("FLOOR", "WALLS")))
 
-  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "wet" -> isWet, "towel" -> isTowel, "dead" -> isDead, "mathemetician" -> isMathemetician, "philosopher" -> isPhilosopher, "succesful real estate investor" -> isRealEstateInvestor, "water" -> isWater, "orgainst" -> isOrganist, "full" -> isFull)
+  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "wet" -> isWet, "towel" -> isTowel, "dead" -> isDead, "mathemetician" -> isMathemetician, "philosopher" -> isPhilosopher, "succesful real estate investor" -> isRealEstateInvestor, "water" -> isWater, "organist" -> isOrganist, "full" -> isFull)
   val d_rel2: Map[KeyPhrase, PredBin] = Map("see" -> doesSee, "covers" -> doesCover)
 
   var l_verbs = Set("lives")

@@ -23,12 +23,12 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
   def rooms_known: Map[String, DiscoWorld] = Set(thisRoom.d_model, thatRoom.d_model).foldLeft(Map.empty[String, DiscoWorld])((m, w) => m + (w.name -> w))
 
   def showThisRoom = Action { implicit request =>
-    Ok(views.html.roomview("Room With Montague", rooms_known("This room")))
+    Ok(views.html.roomview("Room with Montague - This Room", rooms_known("This room")))
   }
 
 
   def showThatRoom = Action { implicit request =>
-    Ok(views.html.roomview("Room With Montague", rooms_known("That room")))
+    Ok(views.html.roomview("Room with Montague - That Room", rooms_known("That room")))
   }
 
 // Parsing Json. AArrrgaaa

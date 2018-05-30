@@ -52,4 +52,6 @@ object Monologue {
 
   val soap = new Monologue("Laundering", "One might say that it is being laundered. One might also say that this makes no sense if the killing's end was monetary theft. One might even say that leaving a wallet out, full, is a very clever and convincing ruse if this were some more subtle burglary. ")
 
+  val windowscreen = new Monologue("Window screen", "The window's screen reveals half a shed, some trees. ")
+
 }

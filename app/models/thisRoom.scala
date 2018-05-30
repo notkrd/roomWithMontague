@@ -18,7 +18,7 @@ object thisRoom{
   val isCup: PredSing = Set("BLUE_CUP", "EMPTY_GLASS", "CUP_WATER")
   val isWalls: PredSing = Set("WALLS")
   val isBlanket: PredSing = Set("BLANKET")
-  val isWindow: PredSing = Set("window")
+  val isWindow: PredSing = Set("WINDOW")
   val isAnimal: PredSing = Set("ANT", "PERSON", "SPIDER")
   val isGlowing: PredSing = Set("SCREEN", "WINDOW")
   val isScreen: PredSing = Set("SCREEN")
@@ -46,7 +46,7 @@ object thisRoom{
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows, "the window glows" -> Monologue.window, "the thick red paperback lives" -> Monologue.itself, "the thick red paperback glows" -> Monologue.delaney)
+  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows, "the window glows" -> Monologue.window, "the thick red paperback lives" -> Monologue.itself, "the thick red paperback glows" -> Monologue.delaney, "the screen is the window" -> Monologue.windowscreen)
 
   val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers)
 }

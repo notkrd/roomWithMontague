@@ -43,6 +43,8 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
   def concatPhrase(parsed: List[Map[String, String]]): String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
 
+  def concatFromPairs(pairs: List[(String, String)]): String = pairs.foldLeft("")((phrase_made: String, fst_phr: (String, String)) => phrase_made + " " + fst_phr._2)
+
   /** Message for parse error
     *
     * @param phr_in phrase to parse
@@ -71,7 +73,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     */
   def falsity_for(phr_in: String): String = "It is not the case that <strong>" + phr_in + "</strong>. "
 
-  def parse_error_for(parse_error: String)(phr_in: String): String = "At <strong>" + phr_in + "</strong> the machine spins out, elsewhere, grinding. It leaves these notes: " + parse_error
+  def parse_error_for(parse_error: String)(phr_in: String): String = "At <strong>" + phr_in + "</strong> the language machine spins out, elsewhere, grinding. It leaves these notes: " + parse_error
 
   val nothing_msg = "There is nothing here, unuttered. "
 
@@ -80,13 +82,22 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   trait DiscourseParser extends Parsers {
     type Elem = (String, String)
 
-    class SynReader(phrases: List[(String, String)]) extends Reader[Elem] {
+    class SynReader(val phrases: List[(String, String)], val phrases_learned: Map[String, List[(String, String)]] = Map[String, List[(String, String)]]()) extends Reader[Elem] {
       def first: Elem = phrases.head
-      def rest: Reader[Elem] = new SynReader(phrases.tail)
+      def rest: SynReader = new SynReader(phrases.tail)
       def atEnd: Boolean = phrases.isEmpty
       def pos: Position = NoPosition
 
-      val full_phrase: String = phrases.foldLeft("")((phrase_made, fst_phr) => phrase_made + " " + fst_phr._2)
+      val full_phrase: String = concatFromPairs(phrases)
+
+      def add_phrase(new_cat: String)(new_phr: List[(String, String)]) = new SynReader(phrases, phrases_learned + (new_cat -> new_phr))
+
+      def strs_consumed(that: SynReader): String = phrases.take(phrases.length - that.phrases.length).foldLeft("")((s: String, p: (String, String)) => s + " " + p._2)
+
+      def phrases_consumed(that: SynReader): List[(String, String)] = phrases.take(phrases.length - that.phrases.length)
+
+      def add_difference(new_cat: String)(that: SynReader): SynReader = add_phrase(new_cat)(phrases_consumed(that))
+
     }
 
     /** Takes a list of maps to a list of (cat, phrase) pairs
@@ -276,9 +287,9 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
       }
     }
 
-    val AuxNPParser: Parser[PredSing] = NPParser ^^ (ent => _ == ent)
-
     val AuxAdjParser: Parser[PredSing] = AdjTokenParser ^^ (adj => e => adj(e))
+
+    val AuxNPParser: Parser[PredSing] = NPParser ^^ (ent => _ == ent)
 
     val auxMeaning: Auxiliary => Parser[PredSing] = {
       case _: AuxIs => AuxAdjParser | AuxNPParser
@@ -310,7 +321,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
             case false => falsity_for(full_phrase)
           }
         }
-        case Failure(err, _) => failure_for(full_phrase, err)
+        case Failure(err, _) => failure_for(full_phrase)
         case Error(err, _) => parse_error_for(err)(full_phrase)
         }
       }

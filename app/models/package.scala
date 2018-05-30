@@ -35,5 +35,30 @@ package object models {
     str.trim.capitalize ++ ". "
   }
 
-  val shit_syntax: Map[(String, String), String] = Map(("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity", ("Vacant", "Determiner") -> "Determiner", ("Determiner", "Noun") -> "Entity", ("Entity", "Intransitive Verb") -> "Sentence", ("Entity", "Auxiliary Verb") -> "Entity + Auxiliary Verb", ("Entity + Auxiliary Verb", "Adjective") -> "Sentence", ("Entity + Auxiliary Verb", "Entity") -> "Sentence", ("Entity", "Transitive Verb") -> "Entity + Transitive Verb", ("Entity + Transitive Verb", "Entity") -> "Sentence")
+  val shit_syntax: Map[(String, String), String] = Map(
+    ("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity",
+    ("Vacant", "Determiner") -> "Determiner",
+    ("Determiner", "Noun") -> "Entity",
+    ("Determiner", "Adjective") -> "Awaits Noun",
+    ("Awaits Noun", "Noun") -> "Entity",
+    ("Awaits Noun", "Adjective") -> "Awaits Noun",
+    ("Entity", "Intransitive Verb") -> "Sentence",
+    ("Entity", "Auxiliary Verb") -> "Entity + Auxiliary Verb",
+    ("Entity + Auxiliary Verb", "Adjective") -> "Sentence",
+    ("Entity + Auxiliary Verb", "Entity") -> "Sentence",
+    ("Entity + Auxiliary Verb", "Determiner") -> "Determiner Final",
+    ("Determiner Final", "Noun") -> "Sentence",
+    ("Determiner Final", "Adjective") -> "Awaits Noun Final",
+    ("Awaits Noun Final", "Noun") -> "Sentence",
+    ("Awaits Noun Final", "Adjective") -> "Awaits Noun Final",
+    ("Entity", "Transitive Verb") -> "Entity + Transitive Verb",
+    ("Entity + Transitive Verb", "Entity") -> "Sentence")
+
+  val prediction_pairs: Map[String, Set[String]] = Map(
+    "Vacant" -> Set("Vacant", "Entity", "Determiner"),
+    "Determiner" -> Set( "Noun", "Adjective"),
+    "Adjective" -> Set("Adjective", "Noun"),
+    "Noun" -> Set("Auxiliary Verb", "Intransitive Verb", "Transitive Verb"),
+    "Auxiliary Verb" -> Set("Determiner", "Adjective"),
+    "Transitive Verb" -> Set("Determiner", "Entity"))
 }
