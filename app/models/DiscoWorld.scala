@@ -18,7 +18,7 @@ import scala.util.parsing.input.{Reader, Position, NoPosition}
 class DiscoWorld(entities: Map[KeyPhrase, Entity],
                  relations1: Map[KeyPhrase, PredSing],
                  relations2: Map[KeyPhrase, Entity => Entity => Boolean],
-                 val lexicon: Map[KeyPhrase, Set[KeyPhrase]] = Map(),
+                 val lexicon: Map[String, Set[List[(String, String)]]] = Map[KeyPhrase, Set[List[(KeyPhrase, String)]]](),
                  val name: String = "unknown world",
                  val m_triggers: Map[String, Monologue] = Map(),
                  val m_syntax: Map[(String, String), String] = shit_syntax
@@ -82,22 +82,58 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   trait DiscourseParser extends Parsers {
     type Elem = (String, String)
 
-    class SynReader(val phrases: List[(String, String)], val phrases_learned: Map[String, List[(String, String)]] = Map[String, List[(String, String)]]()) extends Reader[Elem] {
+    class SynReader(val phrases: List[(String, String)], val phrases_learned: Map[String, Set[List[(String, String)]]] = Map[String, Set[List[(String, String)]]]()) extends Reader[Elem] {
       def first: Elem = phrases.head
-      def rest: SynReader = new SynReader(phrases.tail)
+      def rest: SynReader = new SynReader(phrases.tail, phrases_learned)
       def atEnd: Boolean = phrases.isEmpty
       def pos: Position = NoPosition
 
       val full_phrase: String = concatFromPairs(phrases)
 
-      def add_phrase(new_cat: String)(new_phr: List[(String, String)]) = new SynReader(phrases, phrases_learned + (new_cat -> new_phr))
+      override def toString(): String = {
+        s"Full: $full_phrase, parsed: $phrases, new: $phrases_learned"
+      }
+
+      def add_phrase(new_cat: String)(new_phr: List[(String, String)]): SynReader = {
+        if (phrases_learned contains new_cat) {
+          new SynReader(phrases, phrases_learned + (new_cat -> (phrases_learned(new_cat) + new_phr)))
+        }
+        else {
+          new SynReader(phrases, phrases_learned + (new_cat -> Set(new_phr)))
+        }
+      }
 
       def strs_consumed(that: SynReader): String = phrases.take(phrases.length - that.phrases.length).foldLeft("")((s: String, p: (String, String)) => s + " " + p._2)
 
-      def phrases_consumed(that: SynReader): List[(String, String)] = phrases.take(phrases.length - that.phrases.length)
+      /** Get phrases consumed since a previous reader
+        *
+        * @param that A previous SynReader. This SynReader ought to be a subset of that (unvalidated)
+        * @return The list of phrases
+        */
+      def phrases_consumed(that: SynReader): List[(String, String)] = that.phrases.take(that.phrases.length - this.phrases.length)
 
+      /** Get phrases consumed since a previous reader, and add it to *phrases_learned*
+        *
+        * @param new_cat syntactic category to add the phrase too
+        * @param that A previous SynReader. *This* SynReader ought to be a subset of *that* (unvalidated)
+        * @return A SynReader identical except for the addition of the difference from *that* as a phrase of *new_cat*
+        */
       def add_difference(new_cat: String)(that: SynReader): SynReader = add_phrase(new_cat)(phrases_consumed(that))
 
+    }
+
+    def unfold_input(some_input: Input): List[(String, String)] = {
+      if(some_input.atEnd) {
+        List[(String, String)]()
+      }
+      else {
+        some_input.first :: unfold_input(some_input.rest)
+      }
+    }
+
+    implicit def toSynReader(some_input: Input): SynReader = some_input match {
+      case s: SynReader => s
+      case i: Input => new SynReader(unfold_input(i))
     }
 
     /** Takes a list of maps to a list of (cat, phrase) pairs
@@ -109,6 +145,13 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
       val valid_phrases: List[Map[String, String]] = some_phrases.filter( phr => Set("cat", "phrase").subsetOf(phr.keySet) )
       val cat_phrase_pairs: List[(String, String)] = valid_phrases.map( phr => (phr("cat"), phr("phrase")))
       new SynReader(cat_phrase_pairs)
+    }
+
+    def parseAndLearn[T](cat: String)(p: Parser[T]): Parser[T] = new Parser[T] {
+      def apply(in: Input): ParseResult[T] = p(in) match {
+        case Success(e, r) => Success(e, r.add_difference(cat)(in))
+        case other: NoSuccess => other
+      }
     }
 
     def PredTokenParser(of_cat: String): Parser[PredSing] = new Parser[PredSing] {
@@ -254,7 +297,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     val DetNParser: Parser[Entity] = DetTokenParser >> detMeaning
 
-    val NPParser: Parser[Entity] = NPTokenParser | DetNParser
+    val NPParser: Parser[Entity] = parseAndLearn("Entity")(NPTokenParser | DetNParser)
 
     def VTPartialApp: PredBin => Parser[PredSing] = pred => NPParser ^^ (e => pred(e))
 
@@ -262,6 +305,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     abstract class Auxiliary
     case class AuxIs() extends Auxiliary
+    case class AuxIsNot() extends Auxiliary
 
     /** Parses an auxiliary verb.
       *
@@ -274,6 +318,8 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
           if (h._1 == "Auxiliary Verb") {
             h._2 match {
               case "is" => Success(AuxIs(), in.rest)
+              case "are" => Success(AuxIs(), in.rest)
+              case "is not" => Success(AuxIsNot(), in.rest)
               case _ => Success(AuxIs(), in.rest)
             }
           }
@@ -287,22 +333,29 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
       }
     }
 
-    val AuxAdjParser: Parser[PredSing] = AdjTokenParser ^^ (adj => e => adj(e))
-
-    val AuxNPParser: Parser[PredSing] = NPParser ^^ (ent => _ == ent)
-
-    val auxMeaning: Auxiliary => Parser[PredSing] = {
-      case _: AuxIs => AuxAdjParser | AuxNPParser
-      case _ => AuxAdjParser | AuxNPParser
+    def AuxAdjFunc(an_aux: Auxiliary): PredSing => PredSing = an_aux match {
+      case AuxIs() => adj => e => adj(e)
+      case AuxIsNot() => adj => e => !adj(e)
+      case _ => adj => e => adj(e)
     }
 
-    val auxPhrParser: Parser[PredSing] = AuxTokenParser >> auxMeaning
+    def AuxNPFunc(an_aux: Auxiliary): Entity => PredSing = an_aux match {
+      case AuxIs() => ent => _ == ent
+      case AuxIsNot() => ent => _ != ent
+      case _ => ent => _ == ent
+    }
 
-    val VPParser: Parser[PredSing] = VITokenParser | VTNPParser | auxPhrParser
+    val AuxAdjParser: Auxiliary => Parser[PredSing] = an_aux => AdjTokenParser ^^ AuxAdjFunc(an_aux)
+
+    val AuxNPParser: Auxiliary => Parser[PredSing] = an_aux => NPParser ^^ AuxNPFunc(an_aux)
+
+    val auxPhrParser: Parser[PredSing] = (AuxTokenParser >> AuxAdjParser) | (AuxTokenParser >> AuxNPParser)
+
+    val VPParser: Parser[PredSing] = parseAndLearn("Intransitive Verb")(VITokenParser | VTNPParser | auxPhrParser)
 
     val ApplyVP: Entity => Parser[Boolean] = ent => VPParser ^^ (vp => vp(ent))
 
-    val SParser: Parser[Boolean] = NPParser >> ApplyVP
+    val SParser: Parser[Boolean] = parseAndLearn("Utterance")(NPParser >> ApplyVP)
 
   }
 
@@ -312,17 +365,17 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     def eval_phrases(phrs: List[Map[String, String]]): ParseResult[Boolean] = SParser(mapToReader(phrs))
 
-    def comment_on(phrs: List[Map[String, String]]): String = {
+    def comment_on(phrs: List[Map[String, String]]): (String, Map[String, Set[List[(String, String)]]]) = {
       val full_phrase = concatPhrase(phrs)
       eval_phrases(phrs) match {
-        case Success(v, _) => {
+        case Success(v, r) => {
           v match {
-            case true => truth_for(full_phrase)
-            case false => falsity_for(full_phrase)
+            case true => (truth_for(full_phrase), r.phrases_learned)
+            case false => (falsity_for(full_phrase), r.phrases_learned)
           }
         }
-        case Failure(err, _) => failure_for(full_phrase)
-        case Error(err, _) => parse_error_for(err)(full_phrase)
+        case Failure(err, r) => (failure_for(full_phrase), r.phrases_learned)
+        case Error(err, r) => (parse_error_for(err)(full_phrase), r.phrases_learned)
         }
       }
     }
@@ -334,7 +387,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     * @param phrase_maps a list of phrases, where each map has "cat" and "phrase" keys
     * @return A string response using the evaluation
     */
-  def combinatorsParse(phrase_maps: List[Map[String, String]]): String = {
+  def combinatorsParse(phrase_maps: List[Map[String, String]]): (String, Map[String, Set[List[(String, String)]]]) = {
     MontagueParser.comment_on(phrase_maps)
   }
 
@@ -343,15 +396,15 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     * @param parsed phrase to evaluate, as a sequence of tagged phrases
     * @return Message corresponding to the parse
     */
-  def evalSent(parsed: List[Map[String, String]]): String = {
+  def evalSent(parsed: List[Map[String, String]]): (String, Map[String, Set[List[(String, String)]]]) = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
-    val response: String = if(m_triggers.keySet contains full_phrase) {
-      combinatorsParse(parsed) ++ "<br><br>" ++ m_triggers(full_phrase).text
+    val comb_parse = combinatorsParse(parsed)
+    if(m_triggers.keySet contains full_phrase) {
+      (comb_parse._1 + "<br><br>" + m_triggers(full_phrase).text  + "</br></br>", comb_parse._2)
     }
     else {
-      combinatorsParse(parsed)
+      (comb_parse._1 + "</br></br>", comb_parse._2)
     }
-      response + "</br></br>"
   }
 
 }

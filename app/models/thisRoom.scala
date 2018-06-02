@@ -27,22 +27,23 @@ object thisRoom{
   val isMathematician: PredSing = Set("PERSON")
   val isBook: PredSing = Set("DHALGREN","LINGUISTICS_TEXTBOOK")
 
-  val seeTuples: Set[Tuple2[Entity,Entity]] = (for {a_thing <- d_entities.values} yield (a_thing, "PERSON")).toSet + (("PERSON", "ANT"))
+  val seeTuples: Set[(Entity, Entity)] = (for {a_thing <- d_entities.values} yield (a_thing, "PERSON")).toSet + (("PERSON", "ANT"))
   val doesSee: PredBin = tuplesToPredBin(seeTuples)
 
-  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "alive" -> isAlive, "wet" -> isWet, "dish" -> isDish, "dead" -> isDead, "dirty" -> isDirty, "empty" -> isEmpty, "blue" -> isBlue, "animal" -> isAnimal, "cup" -> isCup, "red" -> isRed, "thick" -> isThick, "glows" -> isGlowing, "walls" -> isWalls, "blanket" -> isBlanket, "screen" -> isScreen, "water" -> isWater, "mathematician" -> isMathematician, "person" -> isPerson, "window" -> isWindow, "book" -> isBook)
+  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "alive" -> isAlive, "wet" -> isWet, "dish" -> isDish, "dead" -> isDead, "dirty" -> isDirty, "empty" -> isEmpty, "blue" -> isBlue, "animal" -> isAnimal, "cup" -> isCup, "red" -> isRed, "thick" -> isThick, "glows" -> isGlowing, "walls" -> isWalls, "blanket" -> isBlanket, "screen" -> isScreen, "water" -> isWater, "mathematician" -> isMathematician, "person" -> isPerson, "window" -> isWindow, "book" -> isBook, "paperback" -> isBook)
 
   val d_rel2: Map[KeyPhrase, PredBin] = Map("sees" -> doesSee)
 
-  val l_ents = Set("the blanket", "the water", "the person", "the walls", "the thick red paperback", "the dirty shirt", "the towel", "the window", "the spider", "the ant", "the kettle", "the empty glass", "the books")
-  var l_det = Set("a", "an", "the")
-  var l_verbs = Set("lives", "glows")
-  var l_adjs = Set("wet", "dead", "alive", "empty", "blue", "dirty", "red", "thick")
-  var l_ns = Set("dish", "animal", "cup", "mathematician", "walls", "person", "screen", "water", "blanket", "window", "book")
-  var l_aux = Set("is", "are")
-  var l_conj = Set("and","or")
-  var l_quants = Set("some", "all", "no")
-  var a_lex: Map[KeyPhrase, Set[KeyPhrase]] = Map("Entity" -> d_entities.keySet, "Intransitive Verb" -> l_verbs, "Transitive Verb" -> d_rel2.keySet, "Auxiliary Verb" -> l_aux, "Conjunction" -> l_conj, "Adjective" -> l_adjs, "Noun" -> l_ns, "Determiner" -> l_det, "Quantifiers" -> l_quants)
+  val l_ents: Set[List[(String, String)]] = Set(List(("Determiner", "the"),("Adjective", "thick"),("Adjective", "red"),("Noun", "paperback")))
+  var l_det: Set[String] = Set("a", "an", "the")
+  var l_verbs: Set[String] = Set("lives", "glows")
+  var l_adjs: Set[String] = Set("wet", "dead", "alive", "empty", "blue", "dirty", "red", "thick")
+  var l_ns: Set[String] = Set("dish", "animal", "cup", "mathematician", "walls", "person", "screen", "water", "blanket", "window", "book", "paperback")
+  var l_aux: Set[String] = Set("is", "are", "is not")
+  var l_conj: Set[String] = Set("and","or")
+  var l_quants: Set[String] = Set("some", "all", "no")
+
+  var a_lex: Map[String, Set[List[(String, String)]]] = Map("Entity" -> l_ents, wrapPhraseSet("Intransitive Verb")(l_verbs), wrapPhraseSet("Transitive Verb")(d_rel2.keySet), wrapPhraseSet("Auxiliary Verb")(l_aux), wrapPhraseSet("Conjunction")(l_conj), wrapPhraseSet("Adjective")(l_adjs), wrapPhraseSet("Noun")(l_ns), wrapPhraseSet("Determiner")(l_det), wrapPhraseSet("Quantifiers")(l_quants), "Utterance" -> Set[List[(String, String)]]())
 
   val discRepresentation = new Box(Seq(), Seq())
 

@@ -48,10 +48,14 @@ object Monologue {
 
   val langs = new Monologue("Rather than write", "Rather than write a new paragraph, I follow tutorials to write a program that prints \"Hello, Darkness!\" in a new language: Elm, Rust, Kotlin, Clojure - if you let the web frameworks in Yesod, Figwheel, and Snap too. Why so many machines to say the same nothing. What machine might be sufficient. When might something else in the math happen, resonant: one is drawn to the colors of the encoding light, structures of call and response. You write into '>' and some echo instantly rebounds or breaks, as though some turn of myself said so back to myself, knew how to say it. ")
 
-  val itself = new Monologue("", "Lying there, in search of a way of talking about nothing except the conditions of its own possibility")
+  val itself = new Monologue("Itself", "Lying there, in search of a way of talking about nothing except the conditions of its own possibility. A hand is that there is only one other thing to do with it. (The hint is given because there is a quote there, that I like, want you to read.")
 
   val soap = new Monologue("Laundering", "One might say that it is being laundered. One might also say that this makes no sense if the killing's end was monetary theft. One might even say that leaving a wallet out, full, is a very clever and convincing ruse if this were some more subtle burglary. ")
 
   val windowscreen = new Monologue("Window screen", "The window's screen reveals half a shed, some trees. ")
+
+  val unknowns = new Monologue("I write what I do not understand","What I write about that room is what I do not know about it. I only guess an ant. Wallpapered or painted, marble or parquet, where the water and windows, the distribution of blood and write. The soap dish left becomes a clue, as I continue to write what I do not understand. ")
+
+  val flip = new Monologue("flip", "Flip it.")
 
 }

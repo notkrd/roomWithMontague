@@ -39,12 +39,16 @@ class Assertions @Inject()(cc: ControllerComponents) extends AbstractController(
       val parsedSent: JsResult[List[Map[String, String]]] = request.body.validate[List[Map[String, String]]]((JsPath \ "parsed").read[List[Map[String, String]]])
 
       parsedSent match {
-        case s: JsSuccess[List[Map[String, String]]] => Ok(the_world.evalSent(s.get))
-        case e: JsError => Ok("Errors: " + JsError.toJson(e).toString())
+        case s: JsSuccess[List[Map[String, String]]] => {
+          val evaluated = the_world.evalSent(s.get)
+          val new_phrases_strs: Map[String, Set[String]] = evaluated._2.mapValues((phr_set: Set[List[(String, String)]]) => phr_set.map(jsonifyPhrases))
+          Ok(Json.obj("discourse" -> evaluated._1, "success" -> true, "new_phrases" -> new_phrases_strs))
+        }
+        case e: JsError => Ok(Json.obj("discourse" -> ("Errors: " + JsError.toJson(e).toString()), "success" -> false))
       }
     }
     else {
-      Ok("You are somewhere else, unspeakable.")
+      Ok(Json.obj("discourse" -> "You are somewhere else, unspeakable.", "success" -> false))
     }
   }
 }

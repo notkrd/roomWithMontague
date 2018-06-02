@@ -35,6 +35,20 @@ package object models {
     str.trim.capitalize ++ ". "
   }
 
+  def wrapPhrase(cat: String)(phr: String): List[(String, String)] = List[(String, String)]((cat, phr))
+
+  def wrapPhraseSet(cat: String)(phrases: Set[String]): (String, Set[List[(String, String)]]) = {
+    (cat, phrases.map(wrapPhrase(cat)))
+  }
+
+  def toOnePhrase(phrases: List[(String, String)]): String = phrases.foldLeft("")((s: String, a_phr: (String, String)) => s + s" ${a_phr._2}").trim
+
+  def jsonifyPhrases(phrases: List[(String, String)]): String =  s"[${phrases.foldLeft("")((j: String, phr: (String, String)) => j + s"{\042cat\042: \042${phr._1}\042, \042phrase\042: \042${phr._2}\042}, ").dropRight(2)}]"
+
+  def escapeKey(some_key: String): String = {
+    some_key.replaceAll(" ","_")
+  }
+
   val shit_syntax: Map[(String, String), String] = Map(
     ("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity",
     ("Vacant", "Determiner") -> "Determiner",
