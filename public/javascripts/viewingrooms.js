@@ -1,8 +1,18 @@
-// Logic for stuff
+// Common things
 
-function updateCat(some_cat) {
-
+function theMessage() {
+    return $("#message");
 }
+
+function theLog() {
+    return $("#text-log");
+}
+
+function theWorld() {
+    return $("#world-vals").data("world");
+}
+
+// Logic for stuff
 
 function escapeKey(some_key) {
     return some_key.replace(/ /g,"_");
@@ -10,6 +20,27 @@ function escapeKey(some_key) {
 
 function idForElt(a_phrase, a_cat) {
     return escapeKey(a_cat) + "-" + escapeKey(phrasesToString(a_phrase));
+}
+
+function joinLexes(lex1, lex2) {
+    var all_cats = _.union(_.keys(lex1), _.keys(lex2));
+    var new_lex = {};
+
+    all_cats.forEach(function(a_cat) {
+        if(lex1.hasOwnProperty(a_cat) && lex2.hasOwnProperty(a_cat)) {
+            new_lex[a_cat] = _.union(lex1[a_cat], lex2[a_cat]);
+        }
+        else if(lex1.hasOwnProperty(a_cat)){
+            new_lex[a_cat] = lex1[a_cat];
+        }
+        else if(lex2.hasOwnProperty(a_cat)){
+            new_lex[a_cat] = lex2[a_cat];
+        }
+
+    });
+
+    console.log(new_lex);
+    return new_lex
 }
 
 function phrasesToString(some_phrs) {
@@ -68,8 +99,33 @@ function learnPhrase(a_phrase, a_cat) {
 function learnSomePhrases(some_phrases) {
     for (var a_cat in some_phrases) {
         for (var a_phrase_key in some_phrases[a_cat]) {
-            learnPhrase(JSON.parse(some_phrases[a_cat][a_phrase_key]), a_cat);
+            learnPhrase(some_phrases[a_cat][a_phrase_key], a_cat);
         }
+    }
+    var world_lexicon = JSON.parse(localStorage.getItem("lexicon_" + theWorld()));
+    if (world_lexicon != null) {
+        var new_lexicon = joinLexes(world_lexicon, some_phrases);
+        localStorage.setItem("lexicon_" + theWorld(), JSON.stringify(new_lexicon));
+    }
+    else {
+        localStorage.setItem("lexicon_" + theWorld(), JSON.stringify(some_phrases));
+    }
+
+}
+
+function displayWorld(a_world) {
+
+    var world_lexicon = localStorage.getItem("lexicon_" + a_world);
+    if (world_lexicon != null) {
+        learnSomePhrases(JSON.parse(world_lexicon));
+    }
+
+    else {
+        $.ajax({url: jsRoutes.controllers.LexiconController.getLexicon(a_world).url,
+            method: "GET",
+            data: {"wname": a_world},
+            success: learnSomePhrases
+        });
     }
 }
 
@@ -81,19 +137,6 @@ function makeAssertion(an_utterance, utterance_parsed, a_world) {
         headers: {"Content-Type": "application/json"},
         success: (function(r) { updateAfterAsserting(r); })
     });
-    clearMsg();
-}
-
-function theMessage() {
-    return $("#message");
-}
-
-function theLog() {
-    return $("#text-log");
-}
-
-function theWorld() {
-    return $("#world-vals").data("world");
 }
 
 function updateAfterAsserting(stuff) {
@@ -109,16 +152,13 @@ function updateAfterAsserting(stuff) {
     var world_elts = $(".world-elt");
     world_elts.off();
     world_elts.click(function () {tryToUtterPhrase($(this).data("elt-val"), $(this).data("cat"))});
+    clearMsg();
 }
 
 function showData() {
     var the_data = JSON.stringify(theMessage().data("parsed"));
     theLog().prepend("You are saying, or might as well be saying, " + the_data + ". <a href='https://github.com/notkrd/roomWithMontague/blob/master/app/models/DiscoWorld.scala'>Parser source</a> <br><br>");
     localStorage.setItem("discourse_" + theWorld(), theLog().html());
-}
-
-function replaceMsg(some_str) {
-    theMessage().text(some_str);
 }
 
 function addMsg(some_str) {
@@ -133,14 +173,14 @@ function clearMsg() {
 
 function restartDiscourse() {
     theLog().text("");
-    localStorage.setItem("discourse_" + theWorld(), theLog().html());
+    localStorage.removeItem("discourse_" + theWorld());
+    localStorage.removeItem("lexicon_" + theWorld());
 }
 
 function tryToUtterPhrase(some_phrs, some_cat) {
     addMsg(phrasesToString(some_phrs));
     requestComposition(theMessage().data("cat"), some_cat);
     theMessage().data("parsed", theMessage().data("parsed").concat(some_phrs));
-    theMessage().data("cat", updateCat(some_cat));
 }
 
 function initializeDiscourse(the_world) {
@@ -175,7 +215,8 @@ function initializeDiscourse(the_world) {
 $(function() {
 
     console.log("eh");
-    initializeDiscourse($("#world-vals").data("world"));
+    initializeDiscourse(theWorld());
+    displayWorld(theWorld());
 
     $(".world-elt").click(function () {tryToUtterPhrase($(this).data("elt-val"), $(this).data("cat"))});
     $("#assert-button").click(function () {makeAssertion(theMessage().text(), theMessage().data("parsed"), theWorld())});

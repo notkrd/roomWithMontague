@@ -9,8 +9,6 @@ GET     /this                       controllers.HomeController.showThisRoom
 GET     /that                       controllers.HomeController.showThatRoom
 # Home controller on my room
 GET     /                           controllers.HomeController.showThisRoom
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
 GET     /message                    controllers.AsyncController.message
 
@@ -18,9 +16,13 @@ GET     /message                    controllers.AsyncController.message
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file)
 
 # Making assertions
-POST     /ajax/assert/:wname        controllers.Assertions.assert(wname: String)
+POST    /ajax/assert/:wname         controllers.Assertions.assert(wname: String)
 
 GET     /ajax/compose/:wname        controllers.Assertions.compose(wname: String)
+
+# Get a world's lexicon
+
+GET     /ajax/lexicon/:wname        controllers.LexiconController.getLexicon(wname: String)
 
 # Js routing please god
 GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes

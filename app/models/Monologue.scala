@@ -30,7 +30,7 @@ object Monologue {
 
   val montague_inv = new Monologue(montague.title ++ ": successful real estate investor", montague.text.replaceAll("mathematician(s?)", "successful real estate investor$1"))
 
-  val blankets = new Monologue("On blankets", "This room establishes leaf-shadowed temporalities. The intention to act is insufficient to act, even when accompanied by the ability to act. Some might respond by redefining intention to only occur when some physiological sign of action occurs. ")
+  val blankets = new Monologue("On blankets", "This room establishes leaf-shadowed temporalities. The intention to act is insufficient to act, even when accompanied by the ability to act. Some might respond by redefining intention to only occur when some physiological sign of its effect becomes measured; I turn towards the bright screen.")
 
   val blood = new Monologue("Bloody water", "The body's water drains into the hole in the floor, after filling the towel round Montague's neck. This blood is imagined; the book left it out. But the water is wet and a body must leak.")
 
@@ -48,14 +48,16 @@ object Monologue {
 
   val langs = new Monologue("Rather than write", "Rather than write a new paragraph, I follow tutorials to write a program that prints \"Hello, Darkness!\" in a new language: Elm, Rust, Kotlin, Clojure - if you let the web frameworks in Yesod, Figwheel, and Snap too. Why so many machines to say the same nothing. What machine might be sufficient. When might something else in the math happen, resonant: one is drawn to the colors of the encoding light, structures of call and response. You write into '>' and some echo instantly rebounds or breaks, as though some turn of myself said so back to myself, knew how to say it. ")
 
-  val itself = new Monologue("Itself", "Lying there, in search of a way of talking about nothing except the conditions of its own possibility. A hand is that there is only one other thing to do with it. (The hint is given because there is a quote there, that I like, want you to read.")
+  val itself = new Monologue("Itself", "Lying there, in search of a way of talking about nothing except the conditions of its own possibility. A suggestion is that there is only one other thing to do with it. (The hint is given because there is a quote there, that I like, want you to read.")
 
-  val soap = new Monologue("Laundering", "One might say that it is being laundered. One might also say that this makes no sense if the killing's end was monetary theft. One might even say that leaving a wallet out, full, is a very clever and convincing ruse if this were some more subtle burglary. ")
+  val soap = new Monologue("Laundering", "One might say that it is being laundered. One might also say that this makes no sense if the killing's end was monetary theft. One might even speculate that leaving a wallet out, full, would be a very clever and convincing ruse if this were some more subtle burglary (<q>would</q> taking Saul Kripke to say something calculable about, those speculative burglars long gone (admittedly, Saul wrote first, but the math's subtlety makes his tuples taught second; and anyway, that mathematician survives)).")
 
   val windowscreen = new Monologue("Window screen", "The window's screen reveals half a shed, some trees. ")
 
-  val unknowns = new Monologue("I write what I do not understand","What I write about that room is what I do not know about it. I only guess an ant. Wallpapered or painted, marble or parquet, where the water and windows, the distribution of blood and write. The soap dish left becomes a clue, as I continue to write what I do not understand. ")
+  val unknowns = new Monologue("I write what I do not understand","What I write about that room is what I do not know about it. I only guess an ant. Wallpapered or painted, marble or parquet, where the water and windows, the distribution of blood and water. The soap dish left becomes a clue, emitting terrible significance, as I continue to write what I do not understand, from what some others (those Fefermans) may have known more about but did not write. ")
 
   val flip = new Monologue("flip", "Flip it.")
+
+  val thread = new Monologue("The thread of it", "The thread of a story leads to some terrible transparency, an inversion of the night. Detectives catch their targets, are caught by them, or turn away from something terrible, out in the streets. The sentence, even this, turns after many diversions, divisions, gatherings, towards one verdict, a crossing by the river. Stay a while, won't you, before the parking lot's return.")
 
 }

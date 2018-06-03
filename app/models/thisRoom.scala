@@ -47,7 +47,7 @@ object thisRoom{
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows, "the window glows" -> Monologue.window, "the thick red paperback lives" -> Monologue.itself, "the thick red paperback glows" -> Monologue.delaney, "the screen is the window" -> Monologue.windowscreen)
+  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows, "the window glows" -> Monologue.window, "the thick red paperback lives" -> Monologue.itself, "the thick red paperback glows" -> Monologue.delaney, "the screen is the window" -> Monologue.windowscreen, "the water is not wet" -> Monologue.thread, "the blanket glows" -> Monologue.blankets)
 
   val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers)
 }

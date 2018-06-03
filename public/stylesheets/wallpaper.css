@@ -31,7 +31,7 @@ a.verboten {
 }
 
 #top{
-    background: #80c846 url("/assets/images/plaster_wall_texture.jpg") fixed;
+    background: grey url("/assets/images/plaster_wall_texture.jpg") fixed;
     box-shadow:0 -4px 0 rgba(0, 0, 0, 0.1) inset;
     padding:0;
     position:relative;
@@ -62,13 +62,13 @@ p{margin:1em 0;}
 
 .texty {
     max-width: 720px;
-    margin: 2em;
+    margin: 2vw;
     font-size: large;
 }
 
 .instructional {
     max-width: 720px;
-    margin: 2em;
+    margin: 2vw;
     font-size: large;
     color: black;
 }
@@ -120,7 +120,7 @@ p{margin:1em 0;}
 }
 
 li {
-    margin-bottom: 0.25em;
+    margin-bottom: 0.5em;
 }
 
 @media (max-width: 800px) {

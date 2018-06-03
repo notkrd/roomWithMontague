@@ -1,4 +1,4 @@
-import scala.collection.immutable.Set
+import scala.collection.immutable.{List, Set, Map}
 
 /** Relevant type synonyms. */
 package object models {
@@ -11,6 +11,9 @@ package object models {
   type PredBin = Entity => Entity => Boolean
   type Embedding = Map[Variable, Entity]
   type Lexicon[A] = Map[A, Set[Utterance]]
+  type TaggedWord = (String, String)
+  type Phrase = List[TaggedWord]
+  type PhrasesLexicon = Map[String, Set[Phrase]]
 
   /** Reduces a referent to underlying string
     *

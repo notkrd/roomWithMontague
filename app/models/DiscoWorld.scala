@@ -18,7 +18,7 @@ import scala.util.parsing.input.{Reader, Position, NoPosition}
 class DiscoWorld(entities: Map[KeyPhrase, Entity],
                  relations1: Map[KeyPhrase, PredSing],
                  relations2: Map[KeyPhrase, Entity => Entity => Boolean],
-                 val lexicon: Map[String, Set[List[(String, String)]]] = Map[KeyPhrase, Set[List[(KeyPhrase, String)]]](),
+                 val lexicon: PhrasesLexicon = Map[KeyPhrase, Set[List[(KeyPhrase, String)]]](),
                  val name: String = "unknown world",
                  val m_triggers: Map[String, Monologue] = Map(),
                  val m_syntax: Map[(String, String), String] = shit_syntax
@@ -43,7 +43,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
   def concatPhrase(parsed: List[Map[String, String]]): String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
 
-  def concatFromPairs(pairs: List[(String, String)]): String = pairs.foldLeft("")((phrase_made: String, fst_phr: (String, String)) => phrase_made + " " + fst_phr._2)
+  def concatFromPairs(pairs: Phrase): String = pairs.foldLeft("")((phrase_made: String, fst_phr: (String, String)) => phrase_made + " " + fst_phr._2)
 
   /** Message for parse error
     *
@@ -82,7 +82,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   trait DiscourseParser extends Parsers {
     type Elem = (String, String)
 
-    class SynReader(val phrases: List[(String, String)], val phrases_learned: Map[String, Set[List[(String, String)]]] = Map[String, Set[List[(String, String)]]]()) extends Reader[Elem] {
+    class SynReader(val phrases: Phrase, val phrases_learned: PhrasesLexicon = Map[String, Set[List[(String, String)]]]()) extends Reader[Elem] {
       def first: Elem = phrases.head
       def rest: SynReader = new SynReader(phrases.tail, phrases_learned)
       def atEnd: Boolean = phrases.isEmpty
@@ -365,7 +365,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     def eval_phrases(phrs: List[Map[String, String]]): ParseResult[Boolean] = SParser(mapToReader(phrs))
 
-    def comment_on(phrs: List[Map[String, String]]): (String, Map[String, Set[List[(String, String)]]]) = {
+    def comment_on(phrs: List[Map[String, String]]): (String, PhrasesLexicon) = {
       val full_phrase = concatPhrase(phrs)
       eval_phrases(phrs) match {
         case Success(v, r) => {
@@ -387,7 +387,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     * @param phrase_maps a list of phrases, where each map has "cat" and "phrase" keys
     * @return A string response using the evaluation
     */
-  def combinatorsParse(phrase_maps: List[Map[String, String]]): (String, Map[String, Set[List[(String, String)]]]) = {
+  def combinatorsParse(phrase_maps: List[Map[String, String]]): (String, PhrasesLexicon) = {
     MontagueParser.comment_on(phrase_maps)
   }
 
@@ -396,7 +396,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     * @param parsed phrase to evaluate, as a sequence of tagged phrases
     * @return Message corresponding to the parse
     */
-  def evalSent(parsed: List[Map[String, String]]): (String, Map[String, Set[List[(String, String)]]]) = {
+  def evalSent(parsed: List[Map[String, String]]): (String, PhrasesLexicon) = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val comb_parse = combinatorsParse(parsed)
     if(m_triggers.keySet contains full_phrase) {

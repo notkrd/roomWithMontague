@@ -12,13 +12,13 @@
     @for(some_cat <- w.lexicon.keys.toSeq.sorted){
         <h4>@some_cat</h4>
         <ul id="@escapeKey(some_cat)">
-        @for(a_thing <- w.lexicon(some_cat)) {
-            <li><a class="verboten world-elt" href="#nowhere" data-elt-val="@jsonifyPhrases(a_thing)" data-cat="@some_cat">@toOnePhrase(a_thing)</a></li>
-        }
+        @*@for(a_thing <- w.lexicon(some_cat)) {*@
+            @*<li><a class="verboten world-elt" href="#nowhere" data-elt-val="@jsonifyPhrases(a_thing)" data-cat="@some_cat">@toOnePhrase(a_thing)</a></li>*@
+        @*}*@
         </ul>
     }
 
-    <a href="https://github.com/notkrd/roomWithMontague" id="world-source">Source [SPOILERS!]</a>
+    <a href="https://github.com/notkrd/roomWithMontague" id="world-source">Source [SPOILERS]</a>
 
     <br>
     <br>

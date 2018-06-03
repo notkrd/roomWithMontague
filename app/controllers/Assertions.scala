@@ -13,7 +13,7 @@ import models._
 
 class Assertions @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
-  def rooms_known: Map[String, DiscoWorld] = Set(thisRoom.d_model, thatRoom.d_model).foldLeft(Map.empty[String, DiscoWorld])((m, w) => m + (w.name -> w))
+  def rooms_known: Map[String, DiscoWorld] = Map(thisRoom.d_model.name -> thisRoom.d_model, thatRoom.d_model.name -> thatRoom.d_model)
 
   def compose(wname: String) = Action { implicit request =>
     if ((rooms_known.keySet contains wname) && (Set("lcat", "rcat") subsetOf request.queryString.keySet)) {
@@ -40,9 +40,9 @@ class Assertions @Inject()(cc: ControllerComponents) extends AbstractController(
 
       parsedSent match {
         case s: JsSuccess[List[Map[String, String]]] => {
-          val evaluated = the_world.evalSent(s.get)
-          val new_phrases_strs: Map[String, Set[String]] = evaluated._2.mapValues((phr_set: Set[List[(String, String)]]) => phr_set.map(jsonifyPhrases))
-          Ok(Json.obj("discourse" -> evaluated._1, "success" -> true, "new_phrases" -> new_phrases_strs))
+          val evaluated: (String, PhrasesLexicon) = the_world.evalSent(s.get)
+          val new_phrases_json: JsValue = formatLex.writes(evaluated._2)
+          Ok(Json.obj("discourse" -> evaluated._1, "success" -> true, "new_phrases" -> new_phrases_json))
         }
         case e: JsError => Ok(Json.obj("discourse" -> ("Errors: " + JsError.toJson(e).toString()), "success" -> false))
       }

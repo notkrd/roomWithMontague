@@ -39,7 +39,8 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(
       JavaScriptReverseRouter("jsRoutes")(
         routes.javascript.Assertions.assert,
-        routes.javascript.Assertions.compose
+        routes.javascript.Assertions.compose,
+        routes.javascript.LexiconController.getLexicon
       )
     ).as("text/javascript")
   }
