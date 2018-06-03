@@ -14,9 +14,15 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/wallpaper.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.ico")">
 
-        <script src="@routes.Assets.versioned("javascripts/jquery-3.3.1.js")"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+                window.jQuery || document.write('<script src="@routes.Assets.versioned("javascripts/jquery-3.3.1.js")"><\/script>');
+        </script>
 
-        <script src="@routes.Assets.versioned("javascripts/lodash.min.js")"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
+        <script>
+            window._ || document.write('<script src="@routes.Assets.versioned("javascripts/lodash.min.js")"><\/script>');
+        </script>
 
 
             <!-- Embedded Javascript router -->

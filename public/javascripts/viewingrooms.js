@@ -39,13 +39,11 @@ function joinLexes(lex1, lex2) {
 
     });
 
-    console.log(new_lex);
     return new_lex
 }
 
 function phrasesToString(some_phrs) {
     var the_str = "";
-    console.log("hmm");
     for (var a_phr in some_phrs) {
         if(some_phrs[a_phr].hasOwnProperty("phrase")) {
             the_str += some_phrs[a_phr].phrase + " ";
@@ -72,7 +70,6 @@ function requestComposition(l_cat, r_cat) {
 }
 
 function updateWithCat(some_json) {
-    console.log(some_json);
     if(some_json.hasOwnProperty('new_cat')) {
         theMessage().data("cat", some_json.new_cat)
     }
@@ -82,7 +79,6 @@ function updateWithCat(some_json) {
         all_elts.addClass("verboten");
         for (var an_opt in some_json.new_opts) {
             var a_cat = some_json.new_opts[an_opt];
-            console.log(a_cat);
             var to_change = $('.world-elt[data-cat="' + a_cat + '"]');
             to_change.removeClass("verboten");
             to_change.addClass("permitted");
@@ -140,7 +136,6 @@ function makeAssertion(an_utterance, utterance_parsed, a_world) {
 }
 
 function updateAfterAsserting(stuff) {
-    console.log(stuff);
     if(stuff.hasOwnProperty("discourse") && stuff.hasOwnProperty("success")) {
         theLog().prepend(stuff.discourse);
         localStorage.setItem("discourse_" + theWorld(), theLog().html());

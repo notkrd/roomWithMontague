@@ -82,7 +82,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   trait DiscourseParser extends Parsers {
     type Elem = (String, String)
 
-    class SynReader(val phrases: Phrase, val phrases_learned: PhrasesLexicon = Map[String, Set[List[(String, String)]]]()) extends Reader[Elem] {
+    class SynReader(val phrases: Phrase, val phrases_learned: PhrasesLexicon = empty_lex) extends Reader[Elem] {
       def first: Elem = phrases.head
       def rest: SynReader = new SynReader(phrases.tail, phrases_learned)
       def atEnd: Boolean = phrases.isEmpty
@@ -367,17 +367,22 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     def comment_on(phrs: List[Map[String, String]]): (String, PhrasesLexicon) = {
       val full_phrase = concatPhrase(phrs)
-      eval_phrases(phrs) match {
-        case Success(v, r) => {
-          v match {
-            case true => (truth_for(full_phrase), r.phrases_learned)
-            case false => (falsity_for(full_phrase), r.phrases_learned)
+      if (full_phrase.isEmpty) {
+        (nothing_msg, empty_lex)
+      }
+      else {
+        eval_phrases(phrs) match {
+          case Success(v, r) => {
+            v match {
+              case true => (truth_for(full_phrase), r.phrases_learned)
+              case false => (falsity_for(full_phrase), r.phrases_learned)
+            }
           }
-        }
-        case Failure(err, r) => (failure_for(full_phrase), r.phrases_learned)
-        case Error(err, r) => (parse_error_for(err)(full_phrase), r.phrases_learned)
+          case Failure(err, r) => (failure_for(full_phrase), r.phrases_learned)
+          case Error(err, r) => (parse_error_for(err)(full_phrase), r.phrases_learned)
         }
       }
+    }
     }
 
   /* Combinators over */

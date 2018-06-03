@@ -15,6 +15,8 @@ package object models {
   type Phrase = List[TaggedWord]
   type PhrasesLexicon = Map[String, Set[Phrase]]
 
+  val empty_lex: PhrasesLexicon = Map[String, Set[Phrase]]()
+
   /** Reduces a referent to underlying string
     *
     * @param r The referent in
@@ -55,6 +57,7 @@ package object models {
   val shit_syntax: Map[(String, String), String] = Map(
     ("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity",
     ("Vacant", "Determiner") -> "Determiner",
+    ("Vacant", "Utterance") -> "Utterance",
     ("Determiner", "Noun") -> "Entity",
     ("Determiner", "Adjective") -> "Awaits Noun",
     ("Awaits Noun", "Noun") -> "Entity",
