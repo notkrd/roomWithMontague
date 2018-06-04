@@ -41,13 +41,13 @@ object thisRoom{
   var l_ns: Set[String] = Set("dish", "animal", "cup", "mathematician", "walls", "person", "screen", "water", "blanket", "window", "book", "paperback")
   var l_aux: Set[String] = Set("is", "are", "is not")
   var l_conj: Set[String] = Set("and","or")
-  var l_quants: Set[String] = Set("some", "all", "no")
+  var l_quants: Set[String] = Set("a", "all", "every", "some", "no")
 
-  var a_lex: Map[String, Set[List[(String, String)]]] = Map("Entity" -> l_ents, wrapPhraseSet("Intransitive Verb")(l_verbs), wrapPhraseSet("Transitive Verb")(d_rel2.keySet), wrapPhraseSet("Auxiliary Verb")(l_aux), wrapPhraseSet("Conjunction")(l_conj), wrapPhraseSet("Adjective")(l_adjs), wrapPhraseSet("Noun")(l_ns), wrapPhraseSet("Determiner")(l_det), wrapPhraseSet("Quantifiers")(l_quants), "Utterance" -> Set[List[(String, String)]]())
+  var a_lex: Map[String, Set[List[(String, String)]]] = Map("Entity" -> l_ents, wrapPhraseSet("Intransitive Verb")(l_verbs), wrapPhraseSet("Transitive Verb")(d_rel2.keySet), wrapPhraseSet("Auxiliary Verb")(l_aux), wrapPhraseSet("Conjunction")(l_conj), wrapPhraseSet("Adjective")(l_adjs), wrapPhraseSet("Noun")(l_ns), wrapPhraseSet("Determiner")(l_det), wrapPhraseSet("Quantifier")(l_quants), "Utterance" -> Set[List[(String, String)]]())
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "an animal lives" -> Monologue.metaphor, "the animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows, "the window glows" -> Monologue.window, "the thick red paperback lives" -> Monologue.itself, "the thick red paperback glows" -> Monologue.delaney, "the screen is the window" -> Monologue.windowscreen, "the water is not wet" -> Monologue.thread, "the blanket glows" -> Monologue.blankets)
+  val triggers: Map[String, Monologue] = Map("water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "the screen glows" -> Monologue.glows, "a screen glows" -> Monologue.glows, "the window glows" -> Monologue.window, "red paperback lives" -> Monologue.itself, "red paperback glows" -> Monologue.delaney, "the screen is the window" -> Monologue.windowscreen, "the water is not wet" -> Monologue.thread, "the blanket glows" -> Monologue.blankets)
 
   val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers)
 }

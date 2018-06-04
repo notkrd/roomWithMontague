@@ -30,14 +30,14 @@ object thatRoom{
   var l_ns = Set("towel", "mathematician", "semanticist", "successful real estate investor", "water", "organist")
   var l_aux = Set("is", "are", "is not")
   var l_dets= Set("a", "an", "the")
-  var l_quants = Set("some", "all", "no")
+  var l_quants: Set[String] = Set("a", "all", "every", "some", "no")
   var l_conj = Set("and", "or")
 
-  var a_lex: Map[String, Set[List[(String, String)]]] = Map("Entity" -> l_ents, wrapPhraseSet("Intransitive Verb")(l_verbs), wrapPhraseSet("Transitive Verb")(d_rel2.keySet), wrapPhraseSet("Auxiliary Verb")(l_aux), wrapPhraseSet("Conjunction")(l_conj), wrapPhraseSet("Adjective")(l_adjs), wrapPhraseSet("Noun")(l_ns), wrapPhraseSet("Determiner")(l_dets), wrapPhraseSet("Quantifiers")(l_quants), "Utterance" -> Set[List[(String, String)]]())
+  var a_lex: Map[String, Set[List[(String, String)]]] = Map("Entity" -> l_ents, wrapPhraseSet("Intransitive Verb")(l_verbs), wrapPhraseSet("Transitive Verb")(d_rel2.keySet), wrapPhraseSet("Auxiliary Verb")(l_aux), wrapPhraseSet("Conjunction")(l_conj), wrapPhraseSet("Adjective")(l_adjs), wrapPhraseSet("Noun")(l_ns), wrapPhraseSet("Determiner")(l_dets), wrapPhraseSet("Quantifier")(l_quants), "Utterance" -> Set[List[(String, String)]]())
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem, "the organist is dead" -> Monologue.montague_org, "the successful real estate investor is dead" -> Monologue.montague_inv,"the water is wet" -> Monologue.blood, "the mathematician is wet" -> Monologue.wet, "the semanticist is wet" -> Monologue.wet, "the organist is wet" -> Monologue.wet, "the succesful real estate investor is wet" -> Monologue.wet,  "the bath towel covers the mathematician" -> Monologue.knots, "the walls see the mathematician" -> Monologue.langs, "the wallet covers the soap dish" -> Monologue.soap, "the soap dish covers the wallet" -> Monologue.flip, "the ant lives" -> Monologue.unknowns)
+  val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem, "the organist is dead" -> Monologue.montague_org, "the successful real estate investor is dead" -> Monologue.montague_inv,"the water is wet" -> Monologue.blood, "is wet" -> Monologue.wet,  "towel covers the mathematician" -> Monologue.knots, "the walls see the mathematician" -> Monologue.langs, "the wallet covers the soap dish" -> Monologue.soap, "the soap dish covers the wallet" -> Monologue.flip, "the ant lives" -> Monologue.unknowns)
 
   val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"That room", triggers)
 }

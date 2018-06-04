@@ -28,7 +28,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     m_syntax.keySet.filter( lr => lr._1 == a_cat).map( lr => lr._2)
   }
 
-  def charSet(p: PredSing): Set[Entity] = entities_set.filter(p)
+  implicit def charSet(p: PredSing): Set[Entity] = entities_set.filter(p)
 
   def charList(p: PredSing): List[Entity] = charSet(p).toList
 
@@ -191,7 +191,6 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     /** Parses an entity / noun phrase
       *
       */
-
     val VTTokenParser: Parser[PredBin] = new Parser[PredBin] {
       def apply(in: Input): ParseResult[PredBin] = {
         if(!in.atEnd) {
@@ -237,20 +236,61 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
       }
     }
 
+    /* Helper functions */
+
+    val mod_with: PredSing => PredSing => PredSing = p1 => p2 => {
+      (p1 intersect p2) contains _
+    }
+
+    val combine_combinator: Parser[(PredSing, PredSing) => PredSing] = new Parser[(PredSing, PredSing) => PredSing] {
+      def apply(in: Input): ParseResult[(PredSing, PredSing) => PredSing] = Success(Function.uncurried(mod_with), in)
+    }
+
+    val predModParser: Parser[PredSing] => PredSing => Parser[PredSing] = pars => p => pars ^^ (mod_with(p)(_))
+
+    val mod_with_trans: PredSing => (PredSing, PredSing) => PredSing = p1 => (p2, p3) => {
+      mod_with(mod_with(p1)(p2))(p3)
+    }
+
     /* Compound / complex parsers */
 
-    def mod_with(p1: PredSing)(p2: PredSing): PredSing = {
-      (charSet(p1) intersect charSet(p2)) contains _
+    /** Class for conjunctions. For now, I'm only doing sentence conjunctions
+      *
+      */
+    abstract class Conjunction
+    case class conjAnd() extends Conjunction
+    case class conjOr() extends Conjunction
+
+    /** Parses a conjunction.
+      *
+      */
+    val ConjTokenParser: Parser[Conjunction] = new Parser[Conjunction] {
+
+      def apply(in: Input): ParseResult[Conjunction] = {
+        if (!in.atEnd) {
+          val h = in.first
+          if (h._1 == "Conjunction") {
+            h._2 match {
+              case "and" => Success(conjAnd(), in.rest)
+              case "or" => Success(conjOr(), in.rest)
+              case _ => Success(conjAnd(), in.rest)
+            }
+          }
+          else {
+            Failure(failure_for(h._2), in.rest)
+          }
+        }
+        else {
+          Failure(nothing_msg, in)
+        }
+      }
     }
 
-    val PredModParser: Parser[PredSing] => PredSing => Parser[PredSing] = p => mod => {
-      p ^^ mod_with(mod)
-    }
+    val AdjParser: Parser[(PredSing, PredSing) => PredSing] = AdjTokenParser ^^ (mod_with_trans(_))
 
-    val ANParser: Parser[PredSing] = (AdjTokenParser >> PredModParser(NTokenParser)) | (AdjTokenParser >> PredModParser(ANParser))
+    val AdjNParser: Parser[PredSing] = AdjTokenParser >> ((adj: PredSing) => NTokenParser ^^ (mod_with(adj)(_)))
 
-
-    val NParser: Parser[PredSing] = NTokenParser | ANParser
+    val NParser: Parser[PredSing] = (AdjTokenParser * combine_combinator) >> predModParser(NTokenParser) | NTokenParser
 
     /** Class for determiners. For now, I'm treating determiners (really only "the") as partial functions from sets to entities
       *
@@ -282,7 +322,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
               case "the" => Success(detThe(), in.rest)
               case "a" => Success(detA(), in.rest)
               case "an" => Success(detA(), in.rest)
-              case _ => Success(detThe(), in.rest)
+              case _ => Error(key_error_for(h._2), in.rest)
             }
           }
           else {
@@ -320,7 +360,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
               case "is" => Success(AuxIs(), in.rest)
               case "are" => Success(AuxIs(), in.rest)
               case "is not" => Success(AuxIsNot(), in.rest)
-              case _ => Success(AuxIs(), in.rest)
+              case _ => Error(key_error_for(h._2), in.rest)
             }
           }
           else {
@@ -342,7 +382,6 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     def AuxNPFunc(an_aux: Auxiliary): Entity => PredSing = an_aux match {
       case AuxIs() => ent => _ == ent
       case AuxIsNot() => ent => _ != ent
-      case _ => ent => _ == ent
     }
 
     val AuxAdjParser: Auxiliary => Parser[PredSing] = an_aux => AdjTokenParser ^^ AuxAdjFunc(an_aux)
@@ -355,7 +394,65 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     val ApplyVP: Entity => Parser[Boolean] = ent => VPParser ^^ (vp => vp(ent))
 
-    val SParser: Parser[Boolean] = parseAndLearn("Utterance")(NPParser >> ApplyVP)
+    /** Class for quantifiers. For now, I'm treating quantifiers as binary functions on PredSings
+      *
+      */
+    abstract class Quantifier
+    case class quanSome() extends Quantifier
+    case class quanAll() extends Quantifier
+    case class quanNo() extends Quantifier
+
+    val QuanTokenParser: Parser[Quantifier] = new Parser[Quantifier] {
+
+      def apply(in: Input): ParseResult[Quantifier] = {
+        if (!in.atEnd) {
+          val h = in.first
+          if (h._1 == "Quantifier") {
+            h._2 match {
+              case "a" => Success(quanSome(), in.rest)
+              case "some" => Success(quanSome(), in.rest)
+              case "all" => Success(quanAll(), in.rest)
+              case "every" => Success(quanAll(), in.rest)
+              case "no" => Success(quanNo(), in.rest)
+              case _ => Error(key_error_for(h._2), in.rest)
+            }
+          }
+          else {
+            Failure(failure_for(h._2), in.rest)
+          }
+        }
+        else {
+          Failure(nothing_msg, in)
+        }
+      }
+    }
+
+    val qMeaning: Quantifier => PredSing => PredSing => Boolean = q => p1 => p2 => q match {
+      case quanSome() => (p1 intersect p2).nonEmpty
+      case quanAll() => p1 subsetOf p2
+      case quanNo() => (p1 intersect p2).isEmpty
+    }
+
+    val QuantSParser: Parser[Boolean] = QuanTokenParser >> ((q: Quantifier) => Parser[Boolean]((in: Input) => {
+      (NParser ~ VPParser)(in) match {
+        case Success(a ~ b, r) => Success(qMeaning(q)(a)(b), r)
+        case Failure(fail, r) => Failure(fail, r)
+        case Error(err, r) => Error(err, r)
+      }
+    }))
+
+    val SingleSParser: Parser[Boolean] = (NPParser >> ApplyVP) | QuantSParser
+
+    val conjSMeaning: Conjunction => (Boolean, Boolean) => Boolean = {
+      case conjAnd() => (x: Boolean, y: Boolean) => x && y
+      case conjOr() => (x: Boolean, y: Boolean) => x || y
+    }
+
+    val conjSParser: Parser[(Boolean, Boolean) => Boolean] = ConjTokenParser ^^ conjSMeaning
+
+    /* Sentence parsers */
+
+    val SParser: Parser[Boolean] = parseAndLearn("Utterance")(SingleSParser * conjSParser)
 
   }
 
@@ -374,8 +471,12 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
         eval_phrases(phrs) match {
           case Success(v, r) => {
             v match {
-              case true => (truth_for(full_phrase), r.phrases_learned)
-              case false => (falsity_for(full_phrase), r.phrases_learned)
+              case true => {
+                (truth_for(full_phrase), r.phrases_learned)
+              }
+              case false => {
+                (falsity_for(full_phrase), r.phrases_learned)
+              }
             }
           }
           case Failure(err, r) => (failure_for(full_phrase), r.phrases_learned)
@@ -404,12 +505,9 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
   def evalSent(parsed: List[Map[String, String]]): (String, PhrasesLexicon) = {
     val full_phrase: String = parsed.foldLeft("")((s, p) => s + p("phrase") + " ").toLowerCase.trim
     val comb_parse = combinatorsParse(parsed)
-    if(m_triggers.keySet contains full_phrase) {
-      (comb_parse._1 + "<br><br>" + m_triggers(full_phrase).text  + "</br></br>", comb_parse._2)
-    }
-    else {
-      (comb_parse._1 + "</br></br>", comb_parse._2)
-    }
+    (comb_parse._1 + m_triggers.keySet.filter(tr => full_phrase contains tr).foldLeft("")((r: String, tr: String) => {
+      s"$r ${m_triggers(tr)} <br><br>"
+    }) + "<br><br>", comb_parse._2)
   }
 
 }

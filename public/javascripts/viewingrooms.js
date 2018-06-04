@@ -56,7 +56,7 @@ function phrasesToString(some_phrs) {
 }
 
 function phraseHTML(a_phrase, a_cat) {
-    return "<li><a id='"+ idForElt(a_phrase, a_cat) + "' class='verboten world-elt' href='#nowhere' data-elt-val='" + JSON.stringify(a_phrase) + "' data-cat='"+ a_cat + "'>" + phrasesToString(a_phrase) + "</a></li>";
+    return "<li class='world-li'><a id='"+ idForElt(a_phrase, a_cat) + "' class='verboten world-elt' href='#nowhere' data-elt-val='" + JSON.stringify(a_phrase) + "' data-cat='"+ a_cat + "'>" + phrasesToString(a_phrase) + "</a></li>";
 }
 
 // DOM access stuff
@@ -89,6 +89,7 @@ function updateWithCat(some_json) {
 function learnPhrase(a_phrase, a_cat) {
     if(!$("#"+idForElt(a_phrase, a_cat)).length ) {
         $("#" + escapeKey(a_cat)).append(phraseHTML(a_phrase, a_cat))
+        $("#"+idForElt(a_phrase, a_cat)).click(function () {tryToUtterPhrase($(this).data("elt-val"), $(this).data("cat"))});
     }
 }
 
@@ -144,9 +145,6 @@ function updateAfterAsserting(stuff) {
             learnSomePhrases(stuff["new_phrases"])
         }
     }
-    var world_elts = $(".world-elt");
-    world_elts.off();
-    world_elts.click(function () {tryToUtterPhrase($(this).data("elt-val"), $(this).data("cat"))});
     clearMsg();
 }
 
@@ -170,6 +168,9 @@ function restartDiscourse() {
     theLog().text("");
     localStorage.removeItem("discourse_" + theWorld());
     localStorage.removeItem("lexicon_" + theWorld());
+    $(".world-li").remove();
+    displayWorld(theWorld());
+    requestComposition("Vacant", "Vacant");
 }
 
 function tryToUtterPhrase(some_phrs, some_cat) {
@@ -213,7 +214,6 @@ $(function() {
     initializeDiscourse(theWorld());
     displayWorld(theWorld());
 
-    $(".world-elt").click(function () {tryToUtterPhrase($(this).data("elt-val"), $(this).data("cat"))});
     $("#assert-button").click(function () {makeAssertion(theMessage().text(), theMessage().data("parsed"), theWorld())});
     $("#clear-button").click(clearMsg);
     $("#restart-button").click(restartDiscourse);

@@ -57,7 +57,8 @@ package object models {
   val shit_syntax: Map[(String, String), String] = Map(
     ("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity",
     ("Vacant", "Determiner") -> "Determiner",
-    ("Vacant", "Utterance") -> "Utterance",
+    ("Vacant", "Utterance") -> "Sentence",
+    ("Vacant", "Quantifier") -> "Quantifier",
     ("Determiner", "Noun") -> "Entity",
     ("Determiner", "Adjective") -> "Awaits Noun",
     ("Awaits Noun", "Noun") -> "Entity",
@@ -71,8 +72,11 @@ package object models {
     ("Determiner Final", "Adjective") -> "Awaits Noun Final",
     ("Awaits Noun Final", "Noun") -> "Sentence",
     ("Awaits Noun Final", "Adjective") -> "Awaits Noun Final",
+    ("Quantifier", "Noun") -> "Entity",
     ("Entity", "Transitive Verb") -> "Entity + Transitive Verb",
-    ("Entity + Transitive Verb", "Entity") -> "Sentence")
+    ("Entity + Transitive Verb", "Entity") -> "Sentence",
+    ("Sentence", "Conjunction") -> "Sentence + Conjunction",
+    ("Sentence + Conjunction", "Sentence") -> "Sentence")
 
   val prediction_pairs: Map[String, Set[String]] = Map(
     "Vacant" -> Set("Vacant", "Entity", "Determiner"),
