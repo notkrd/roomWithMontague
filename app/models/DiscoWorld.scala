@@ -32,7 +32,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
   def charList(p: PredSing): List[Entity] = charSet(p).toList
 
-  def binCharSet(p: PredBin): Set[(Entity, Entity)] = {
+  implicit def binCharSet(p: PredBin): Set[(Entity, Entity)] = {
     val pairs: Set[(Entity, Entity)] = for {
       x <- entities_set
       y <- entities_set
@@ -248,10 +248,6 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     val predModParser: Parser[PredSing] => PredSing => Parser[PredSing] = pars => p => pars ^^ (mod_with(p)(_))
 
-    val mod_with_trans: PredSing => (PredSing, PredSing) => PredSing = p1 => (p2, p3) => {
-      mod_with(mod_with(p1)(p2))(p3)
-    }
-
     /* Compound / complex parsers */
 
     /** Class for conjunctions. For now, I'm only doing sentence conjunctions
@@ -286,9 +282,28 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
       }
     }
 
-    val AdjParser: Parser[(PredSing, PredSing) => PredSing] = AdjTokenParser ^^ (mod_with_trans(_))
+    val conjSMeaning: Conjunction => (Boolean, Boolean) => Boolean = {
+      case conjAnd() => (x: Boolean, y: Boolean) => x && y
+      case conjOr() => (x: Boolean, y: Boolean) => x || y
+    }
 
-    val AdjNParser: Parser[PredSing] = AdjTokenParser >> ((adj: PredSing) => NTokenParser ^^ (mod_with(adj)(_)))
+    val conjPredMeaning: Conjunction => (PredSing, PredSing) => PredSing = {
+      case conjAnd() => (x: PredSing, y: PredSing) => x intersect y
+      case conjOr() => (x: PredSing, y: PredSing) => x union y
+    }
+
+    val conjPredBinMeaning: Conjunction => (PredBin, PredBin) => PredBin = {
+      case conjAnd() => (x: PredBin, y: PredBin) => x intersect y
+      case conjOr() => (x: PredBin, y: PredBin) => x union y
+    }
+
+    val conjPredParser: Parser[(PredSing, PredSing) => PredSing] = ConjTokenParser ^^ conjPredMeaning
+
+    val conjPredBinParser: Parser[(PredBin, PredBin) => PredBin] = ConjTokenParser ^^ conjPredBinMeaning
+
+    /* Adjectives, nouns */
+
+    val AdjParser: Parser[PredSing] = AdjTokenParser * conjPredParser
 
     val NParser: Parser[PredSing] = (AdjTokenParser * combine_combinator) >> predModParser(NTokenParser) | NTokenParser
 
@@ -339,9 +354,11 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
 
     val NPParser: Parser[Entity] = parseAndLearn("Entity")(NPTokenParser | DetNParser)
 
+    def VTParser: Parser[PredBin] = VTTokenParser * conjPredBinParser
+
     def VTPartialApp: PredBin => Parser[PredSing] = pred => NPParser ^^ (e => pred(e))
 
-    val VTNPParser: Parser[PredSing] = VTTokenParser >> VTPartialApp
+    val VTNPParser: Parser[PredSing] = VTParser >> VTPartialApp
 
     abstract class Auxiliary
     case class AuxIs() extends Auxiliary
@@ -384,13 +401,13 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
       case AuxIsNot() => ent => _ != ent
     }
 
-    val AuxAdjParser: Auxiliary => Parser[PredSing] = an_aux => AdjTokenParser ^^ AuxAdjFunc(an_aux)
+    val AuxAdjParser: Auxiliary => Parser[PredSing] = an_aux => AdjParser ^^ AuxAdjFunc(an_aux)
 
     val AuxNPParser: Auxiliary => Parser[PredSing] = an_aux => NPParser ^^ AuxNPFunc(an_aux)
 
     val auxPhrParser: Parser[PredSing] = (AuxTokenParser >> AuxAdjParser) | (AuxTokenParser >> AuxNPParser)
 
-    val VPParser: Parser[PredSing] = parseAndLearn("Intransitive Verb")(VITokenParser | VTNPParser | auxPhrParser)
+    val VPParser: Parser[PredSing] = parseAndLearn("Intransitive Verb")((VITokenParser | VTNPParser | auxPhrParser) * conjPredParser)
 
     val ApplyVP: Entity => Parser[Boolean] = ent => VPParser ^^ (vp => vp(ent))
 
@@ -442,11 +459,6 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     }))
 
     val SingleSParser: Parser[Boolean] = (NPParser >> ApplyVP) | QuantSParser
-
-    val conjSMeaning: Conjunction => (Boolean, Boolean) => Boolean = {
-      case conjAnd() => (x: Boolean, y: Boolean) => x && y
-      case conjOr() => (x: Boolean, y: Boolean) => x || y
-    }
 
     val conjSParser: Parser[(Boolean, Boolean) => Boolean] = ConjTokenParser ^^ conjSMeaning
 

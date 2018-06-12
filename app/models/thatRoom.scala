@@ -37,7 +37,7 @@ object thatRoom{
 
   val discRepresentation = new Box(Seq(), Seq())
 
-  val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem, "the organist is dead" -> Monologue.montague_org, "the successful real estate investor is dead" -> Monologue.montague_inv,"the water is wet" -> Monologue.blood, "is wet" -> Monologue.wet,  "towel covers the mathematician" -> Monologue.knots, "the walls see the mathematician" -> Monologue.langs, "the wallet covers the soap dish" -> Monologue.soap, "the soap dish covers the wallet" -> Monologue.flip, "the ant lives" -> Monologue.unknowns)
+  val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem, "the organist is dead" -> Monologue.montague_org, "the successful real estate investor is dead" -> Monologue.montague_inv,"the water is wet" -> Monologue.blood, "is wet" -> Monologue.wet,  "towel covers the mathematician" -> Monologue.knots, "the walls see the mathematician" -> Monologue.langs, "the wallet covers the soap dish" -> Monologue.soap, "the soap dish covers the wallet" -> Monologue.flip, "the ant lives" -> Monologue.unknowns, "the water is not wet" -> Monologue.contradiction, "the mathematician is not dead" -> Monologue.contradiction, "the mathematician sees" -> Monologue.absence, "no" -> Monologue.absence, " or " -> Monologue.choices, "the organist" -> Monologue.unspeakables)
 
   val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"That room", triggers)
 }

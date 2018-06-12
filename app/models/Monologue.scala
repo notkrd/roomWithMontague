@@ -58,6 +58,16 @@ object Monologue {
 
   val flip = new Monologue("flip", "Flip it.")
 
-  val thread = new Monologue("The thread of it", "The thread of a story leads to some terrible transparency, an inversion of the night. Detectives catch their targets, are caught by them, or turn away from something terrible, out in the streets. The sentence, even this, turns after many diversions, divisions, gatherings, towards one verdict, a crossing by the river. Stay a while, won't you, before the parking lot's return.")
+  val contradiction = new Monologue("The thread of it", "The thread of a story leads to some terrible transparency, an inversion of the night. Detectives catch their targets, are caught by them, or turn away from something terrible, out in the streets. The sentence, even this, turns after many diversions, divisions, gatherings, towards one verdict, a crossing by the river. Stay a while, won't you, before the parking lot's return.")
+
+  val absence = new Monologue("What this room does not have", "The air around it inevitable, thickening. The white of memory, imagined memory, more palpable, of course.  ")
+
+  val mansion = new Monologue("Mansion", "This room is a room in a mansion. This has consequences, makes suggestions, for the room here, none of them essential. Towels might be plush, a bath marble, the sink and counter and hangers extended. Somewhere we are told of a flamboyance, making more possible plush towels and marble. ")
+
+  val organs = new Monologue("What this room does not have", "I am not a detective. I do not establish new truths. I am not a search engine. I am not a calculator. I do not know the color of Montague's hair or eyes. But I know he played the organ very well, at a church he did not believe in. ")
+
+  val unspeakables = new Monologue("Bad", "Let us say something very bad, inexcuseable, about our genius. A few sentences (twice) assert Montague had sex with a minor, and was put on trial for it. Some things speak themselves. It was allegedly consensual, but we needn't rationalize our pedestals. Letters from Tarski and other philosophers were submitted to the court, which released him, Berkeley reinstating his job. Probably there are records somewhere, as the courts produce. I do not know what to say about this further, it shall not explicitly cause additional swerves. ")
+
+  val choices = new Monologue("choices", "I have a choice, in ‘telling Montague’s story.’ What it means when someone says ‘I have a choice’ is that the speaker identifies several possible actions in some situation, and they have decided on one, but they do not think their decision easy or trivial, and indeed many spineless others would have followed another course. I am not going to do the second part of this. The first is to cross, somehow or more or differently, a line into historical Fiction. Then I may tell a detective story, write the bedroom, invent an unrecorded confidant. The second would be some kind of research: I could actually read his published papers; I could find a news article or obituary, I could speak to someone who knew him in Berkeley or LA. Instead I will stop, write the interruption.")
 
 }

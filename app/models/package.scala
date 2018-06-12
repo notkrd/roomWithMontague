@@ -32,7 +32,7 @@ package object models {
     * @param tups The ordered pairs satisfying the predicate
     * @return The characteristic binary relation for the set of pairs
     */
-  def tuplesToPredBin(tups: Set[(Entity, Entity)]): PredBin = (x: Entity) => (y: Entity) => {
+  implicit def tuplesToPredBin(tups: Set[(Entity, Entity)]): PredBin = (x: Entity) => (y: Entity) => {
     tups.contains((x, y))
   }
 
@@ -57,26 +57,32 @@ package object models {
   val shit_syntax: Map[(String, String), String] = Map(
     ("Vacant", "Vacant") -> "Vacant", ("Vacant", "Entity") -> "Entity",
     ("Vacant", "Determiner") -> "Determiner",
-    ("Vacant", "Utterance") -> "Sentence",
+    ("Vacant", "Utterance") -> "Utterance",
     ("Vacant", "Quantifier") -> "Quantifier",
     ("Determiner", "Noun") -> "Entity",
     ("Determiner", "Adjective") -> "Awaits Noun",
     ("Awaits Noun", "Noun") -> "Entity",
     ("Awaits Noun", "Adjective") -> "Awaits Noun",
-    ("Entity", "Intransitive Verb") -> "Sentence",
+    ("Entity", "Intransitive Verb") -> "Utterance",
+    ("Intransitive Verb", "Conjunction") -> "Intransitive Verb + Conjunction",
+    ("Intransitive Verb + Conjunction", "Intransitive Verb") -> "Utterance",
+    ("Intransitive Verb + Conjunction", "Auxiliary Verb") -> "Entity + Auxiliary Verb",
     ("Entity", "Auxiliary Verb") -> "Entity + Auxiliary Verb",
-    ("Entity + Auxiliary Verb", "Adjective") -> "Sentence",
-    ("Entity + Auxiliary Verb", "Entity") -> "Sentence",
+    ("Entity + Auxiliary Verb", "Adjective") -> "Utterance",
+    ("Adjective", "Conjunction") -> "Adjective + Conjunction",
+    ("Adjective + Conjunction", "Adjective") -> "Adjective",
+    ("Entity + Auxiliary Verb", "Entity") -> "Utterance",
     ("Entity + Auxiliary Verb", "Determiner") -> "Determiner Final",
-    ("Determiner Final", "Noun") -> "Sentence",
+    ("Determiner Final", "Noun") -> "Utterance",
     ("Determiner Final", "Adjective") -> "Awaits Noun Final",
-    ("Awaits Noun Final", "Noun") -> "Sentence",
+    ("Awaits Noun Final", "Noun") -> "Utterance",
     ("Awaits Noun Final", "Adjective") -> "Awaits Noun Final",
     ("Quantifier", "Noun") -> "Entity",
     ("Entity", "Transitive Verb") -> "Entity + Transitive Verb",
-    ("Entity + Transitive Verb", "Entity") -> "Sentence",
-    ("Sentence", "Conjunction") -> "Sentence + Conjunction",
-    ("Sentence + Conjunction", "Sentence") -> "Sentence")
+    ("Transitive Verb", "Conjunction") -> "Transitive Verb + Conjunction",
+    ("Transitive Verb + Conjunction", "Transitive Verb") -> "Entity + Transitive Verb",
+    ("Entity + Transitive Verb", "Entity") -> "Utterance",
+    ("Utterance", "Conjunction") -> "Vacant")
 
   val prediction_pairs: Map[String, Set[String]] = Map(
     "Vacant" -> Set("Vacant", "Entity", "Determiner"),
