@@ -50,5 +50,5 @@ object thisRoom{
 
   val triggers: Map[String, Monologue] = Map("water is wet" -> Monologue.intro, "the blanket is dirty" -> Monologue.color, "the dirty blanket" -> Monologue.color, "animal lives" -> Monologue.metaphor, "the mathematician is dead" -> Monologue.thx, "screen glows" -> Monologue.from_kant(), "the window glows" -> Monologue.window, "red paperback lives" -> Monologue.itself, "red paperback glows" -> Monologue.delaney, "the screen is the window" -> Monologue.windowscreen, "the water is not wet" -> Monologue.contradiction, "the mathematician is not dead" -> Monologue.contradiction, "the blanket glows" -> Monologue.blankets, "paperback is wet" -> Monologue.submerged)
 
-  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers)
+  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"This room", triggers, epigraph = "<q>I reject the contention that an important theoretical difference exists between formal and natural languages.</q> -Richard Montague, <em>English as a Formal Language</em>")
 }

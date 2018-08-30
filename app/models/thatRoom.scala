@@ -9,6 +9,7 @@ object thatRoom{
   val isWet: PredSing = Set("MONTAGUE", "WATER")
   val isTowel: PredSing = Set("TOWEL")
   val isMathemetician: PredSing = Set("MONTAGUE")
+  val isSemanticist: PredSing = Set("MONTAGUE")
   val isPhilosopher: PredSing = Set("MONTAGUE")
   val isRealEstateInvestor: PredSing = Set("MONTAGUE")
   val isOrganist: PredSing = Set("MONTAGUE")
@@ -21,7 +22,7 @@ object thatRoom{
   val doesSee: PredBin = tuplesToPredBin(seeTuples)
   val doesCover: PredBin = tuplesToPredBin(Set(("MONTAGUE", "TOWEL"), ("SOAP_DISH", "WALLET"), ("FLOOR", "WALLS")))
 
-  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "wet" -> isWet, "towel" -> isTowel, "dead" -> isDead, "mathemetician" -> isMathemetician, "philosopher" -> isPhilosopher, "successful real estate investor" -> isRealEstateInvestor, "water" -> isWater, "organist" -> isOrganist, "full" -> isFull)
+  val d_rel1: Map[KeyPhrase, PredSing] = Map("lives" -> isAlive, "wet" -> isWet, "towel" -> isTowel, "dead" -> isDead, "semanticist" -> isSemanticist, "mathemetician" -> isMathemetician, "philosopher" -> isPhilosopher, "successful real estate investor" -> isRealEstateInvestor, "water" -> isWater, "organist" -> isOrganist, "full" -> isFull)
   val d_rel2: Map[KeyPhrase, PredBin] = Map("see" -> doesSee, "covers" -> doesCover)
 
   val l_ents: Set[List[(String, String)]] = Set(List(("Entity", "the soap dish")), List(("Entity", "the wallet")))
@@ -39,5 +40,5 @@ object thatRoom{
 
   val triggers: Map[String, Monologue] = Map("the mathematician is dead" -> Monologue.montague, "the semanticist is dead" -> Monologue.montague_sem, "the organist is dead" -> Monologue.montague_org, "the successful real estate investor is dead" -> Monologue.montague_inv,"the water is wet" -> Monologue.blood, "is wet" -> Monologue.wet,  "towel covers the mathematician" -> Monologue.knots, "the walls see the mathematician" -> Monologue.langs, "the wallet covers the soap dish" -> Monologue.soap, "the soap dish covers the wallet" -> Monologue.flip, "the ant lives" -> Monologue.unknowns, "the water is not wet" -> Monologue.contradiction, "the mathematician is not dead" -> Monologue.contradiction, "the mathematician sees" -> Monologue.absence, "no" -> Monologue.absence, " or " -> Monologue.choices, "the organist" -> Monologue.unspeakables, "wallet lives" -> Monologue.wallet_life, "walled is dead" -> Monologue.wallet_life)
 
-  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"That room", triggers)
+  val d_model: DiscoWorld = new DiscoWorld(d_entities, d_rel1, d_rel2, a_lex,"That room", triggers, epigraph = "<q>Close beside a leafy thicket:-- / On his nose there was a Cricket,-- / In his hat a Railway-Ticket,-- /        (But his shoes were far too tight.)</q> -Edward Lear, <em>Incidents in the Life of My Uncle Arly.</em>")
 }

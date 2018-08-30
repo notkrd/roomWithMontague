@@ -21,7 +21,8 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
                  val lexicon: PhrasesLexicon = Map[KeyPhrase, Set[List[(KeyPhrase, String)]]](),
                  val name: String = "unknown world",
                  val m_triggers: Map[String, Monologue] = Map(),
-                 val m_syntax: Map[(String, String), String] = shit_syntax
+                 val m_syntax: Map[(String, String), String] = shit_syntax,
+                 val epigraph: String = ""
                 ) extends World(entities, relations1, relations2){
 
   def possSuccs(a_cat: String): Set[String] = {
@@ -57,7 +58,7 @@ class DiscoWorld(entities: Map[KeyPhrase, Entity],
     * @param phr_in phrase to parse
     * @return the message
     */
-  def key_error_for(phr_in: String): String =  "In saying <strong>" + phr_in + "</strong>, you or the programmer seem to have invented words, which is forbidden in the strongest terms. "
+  def key_error_for(phr_in: String): String =  "In saying <strong>" + phr_in + "</strong>, you or the programmer seem to have invented (or forgotten to annotate) words, which is forbidden in the strongest terms. "
 
   /** Message for successful true parse
     *
